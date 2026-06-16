@@ -431,7 +431,6 @@ header h1{font-size:20px;font-weight:700}
   <button class="rbtn" onclick="resetDay()">🔄 Tag zurücksetzen</button>
 </div>
 
-</div>
 
 <script>
 const TODAY = new Date().toISOString().slice(0,10);
@@ -444,6 +443,8 @@ const EJS_SVC = 'service_i41l25q';
 const EJS_WEL = 'template_izi5zov';
 const EJS_MIL = 'template_955n7ts';
 function ejsSend(tpl, params) {
+  // All mails go to Hr. Frick only
+  params.toemail = 'fricki.wangen@gmail.com';
   try { if(typeof emailjs!=='undefined'){ emailjs.init('5TDXz07ouf-xjZsyG'); emailjs.send(EJS_SVC,tpl,params); } } catch(e){}
 }
 
@@ -460,7 +461,15 @@ document.getElementById('los-btn').addEventListener('click', function() {
   if(email) localStorage.setItem('user_email', email);
   document.getElementById('modal').classList.add('hidden');
   applyName(name);
-  if(email) ejsSend(EJS_WEL, {name:name, toemail:email, start:'folgt', ziel:'folgt', diff:'–'});
+  const welParams = {
+    name: name,
+    schueleremail: email || 'keine E-Mail angegeben',
+    start: 'wird noch eingetragen',
+    ziel: 'wird noch eingetragen',
+    diff: '–',
+    vorlage: 'Servus ' + name + ',\n\nich freue mich riesig, dass du mit deinem Gesundheitsplan gestartet bist! 💪\n\nDas ist der erste und wichtigste Schritt – und den hast du gemacht. Schritt für Schritt wirst du dein Ziel erreichen.\n\nIch schaue ab und zu nach deinem Fortschritt und melde mich bei besonderen Momenten. Du schaffst das!\n\nHr. Frick'
+  };
+  ejsSend(EJS_WEL, welParams);
 });
 
 function skipModal() {
@@ -547,20 +556,20 @@ document.getElementById('streak-n').textContent=sx.days.length;
 // MILESTONES
 const MLS=[
   {pct:10,emoji:'🌱',title:'Erste 10% geschafft!',text:'Du hast den ersten Meilenstein erreicht! Dein Körper sagt Danke!',
-   msg:'ich hab gerade gesehen dass du deine ersten 10% erreicht hast – mehr als die meisten überhaupt schaffen!\n\nDer Anfang ist das Schwerste – und den hast du gemacht.',
-   subj:'🌱 {{name}} – du hast die ersten 10% geschafft!'},
+   subj:'🌱 {{name}} hat die ersten 10% geschafft!',
+   vorlage:'Servus {{name}},\n\nich hab gerade gesehen dass du deine ersten 10% erreicht hast – Wahnsinn!\n\nDas klingt vielleicht wenig, aber weißt du was? Die meisten fangen gar nicht erst an. Du hast angefangen UND bist drangeblieben. Das ist mehr als du denkst.\n\nWeiter so – ich bin dabei!\n\nHr. Frick'},
   {pct:25,emoji:'🔥',title:'Ein Viertel geschafft!',text:'25% – das ist richtig stark! Du bist auf dem richtigen Weg!',
-   msg:'ein Viertel deines Ziels liegt bereits hinter dir!\n\nDas ist kein Zufall – das ist deine Disziplin jeden Tag.',
-   subj:'🔥 {{name}} – ein Viertel geschafft!'},
+   subj:'🔥 {{name}} hat ein Viertel geschafft!',
+   vorlage:'Servus {{name}},\n\nein Viertel deines Ziels liegt bereits hinter dir! 🔥\n\nDas ist kein Zufall – das ist deine Arbeit, deine Disziplin und dein Durchhaltevermögen jeden einzelnen Tag. Darauf kannst du stolz sein.\n\nNoch drei Viertel – du bist auf dem richtigen Weg!\n\nHr. Frick'},
   {pct:50,emoji:'⭐',title:'Die Hälfte geschafft!',text:'Halbzeit! Du hast die Hälfte deines Ziels erreicht!',
-   msg:'HALBZEIT! Du hast die Hälfte deines Ziels erreicht!\n\nIch bin wirklich stolz auf dich. Weiter so!',
-   subj:'⭐ {{name}} – Halbzeit! Die Hälfte ist geschafft!'},
+   subj:'⭐ {{name}} hat die Hälfte geschafft – Halbzeit!',
+   vorlage:'Servus {{name}},\n\nHALBZEIT! Ich kann es kaum glauben – du hast die Hälfte deines Ziels erreicht! ⭐\n\nWas du hier schaffst ist wirklich nicht selbstverständlich. Viele träumen davon, du machst es einfach. Jeden Tag ein kleiner Schritt – und jetzt bist du schon in der Mitte.\n\nDie zweite Hälfte gehört dir. Ich bin stolz auf dich!\n\nHr. Frick'},
   {pct:75,emoji:'🚀',title:'Drei Viertel geschafft!',text:'Unglaublich! Nur noch ein Viertel bis zum Ziel!',
-   msg:'drei Viertel – ich kann es kaum glauben!\n\nDu bist so nah dran. Gib jetzt nicht auf!',
-   subj:'🚀 {{name}} – drei Viertel geschafft!'},
+   subj:'🚀 {{name}} hat drei Viertel geschafft!',
+   vorlage:'Servus {{name}},\n\ndrei Viertel – ich bin sprachlos! 🚀\n\nDu bist so nah dran. Das letzte Stück ist manchmal das schwerste – aber du hast bewiesen dass du das kannst. Gib jetzt nicht nach, das Ziel ist zum Greifen nah!\n\nIch drücke dir beide Daumen!\n\nHr. Frick'},
   {pct:100,emoji:'🏆',title:'ZIEL ERREICHT!',text:'Du hast es wirklich geschafft! Das ist eine unglaubliche Leistung!',
-   msg:'ICH KANN ES NICHT FASSEN – DU HAST ES GESCHAFFT!\n\nDas war kein Glück. Das war jeden Tag aufstehen und weitermachen.\n\nIch bin unglaublich stolz auf dich!',
-   subj:'🏆 {{name}} – DU HAST ES GESCHAFFT!'},
+   subj:'🏆 {{name}} hat das Ziel erreicht!',
+   vorlage:'Servus {{name}},\n\nICH KANN ES NICHT FASSEN – DU HAST ES WIRKLICH GESCHAFFT! 🏆🏆🏆\n\nDas war kein Glück. Das war jeden Tag aufstehen, jeden Tag die richtige Entscheidung treffen, auch wenn es schwer war. Das warst DU.\n\nIch bin unglaublich stolz auf dich! Was du hier geleistet hast ist außergewöhnlich.\n\nHerzlichen Glückwunsch – du hast dir das selbst erarbeitet!\n\nHr. Frick'},
 ];
 
 function checkMilestone(pct, prev, name) {
@@ -575,13 +584,16 @@ function checkMilestone(pct, prev, name) {
       const log=JSON.parse(localStorage.getItem('weight_log')||'[]');
       if(email&&goal){
         const cur=log.length>0?log[log.length-1].kg:goal.start;
+        const already=(cur-goal.ziel).toFixed(1);
+        const lost=(goal.start-cur).toFixed(1);
         ejsSend(EJS_MIL,{
-          name:name, toemail:email,
+          name:name, schueleremail:email||'keine Angabe',
           subject:m.subj.replace('{{name}}',name),
-          message:m.msg,
+          message:'⚖️ Gewichtsübersicht:\n• Startgewicht: '+goal.start+' kg\n• Aktuell: '+cur+' kg\n• Zielgewicht: '+goal.ziel+' kg\n• Bereits abgenommen: '+lost+' kg\n• Noch bis zum Ziel: '+already+' kg\n\n📬 E-Mail des Schülers: '+(email||'keine Angabe'),
+          vorlage:m.vorlage.replace(/{{name}}/g,name),
           milestone:m.title,
           start:goal.start+' kg', current:cur+' kg',
-          ziel:goal.ziel+' kg', remaining:(cur-goal.ziel).toFixed(1)+' kg'
+          ziel:goal.ziel+' kg', remaining:already+' kg'
         });
       }
       break;
@@ -656,7 +668,7 @@ function renderWeight(){
     document.getElementById('w-sunday').classList.add('hidden');
     document.getElementById('w-wait').classList.remove('hidden');
     const d=(7-DN.getDay())%7||7;
-    document.getElementById('w-wait-txt').textContent='Nächste Wiegen in '+d+' Tag'+(d===1?'':'en')+' (Sonntag)!';
+    document.getElementById('w-wait-txt').textContent='Nächstes Wiegen in '+d+' Tag'+(d===1?'':'en')+' (Sonntag)!';
   }
   const cont=document.getElementById('w-log');
   cont.innerHTML='';
@@ -683,8 +695,8 @@ function checkInactivity(){
   if(diff>=10){
     localStorage.setItem('last_inact',TODAY);
     ejsSend(EJS_MIL,{
-      name:name, toemail:email,
-      subject:'💪 '+name+', alles okay? Wir vermissen dich!',
+      name:name, schueleremail:email||'keine Angabe',
+      subject:'💪 '+name+' war seit '+diff+' Tagen inaktiv!',
       message:'du warst seit '+diff+' Tagen nicht mehr aktiv.\n\nDas ist völlig normal – jeder hat mal eine schwierige Phase. Aber dein Ziel wartet noch auf dich!\n\nKomm einfach wieder rein, auch ein kleiner Schritt zählt!',
       milestone:'Erinnerung nach '+diff+' Tagen',
       start:'', current:'', ziel:'', remaining:''
