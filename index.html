@@ -181,7 +181,7 @@ header h1{font-size:20px;font-weight:700}
     <div class="modal-info">
       <strong>🔒 Deine Daten sind sicher!</strong>
       Alles was du einträgst – Name, Gewicht, Checkliste – wird <strong>nur auf diesem Gerät</strong> gespeichert. Niemand kann das sehen.<br><br>
-      <strong>📬 Optional:</strong> Wenn du deine E-Mail einträgst, kann Hr. Frick dich bei Meilensteinen kontaktieren und dir deinen Fortschritt zuschicken.
+      <strong>📬 Optional:</strong> Trägst du deine E-Mail ein, schaut Hr. Frick heimlich mit – feuert dich bei jedem Meilenstein an und lässt dich nicht hängen! 🎯
     </div>
     <input type="text" id="inp-name" placeholder="Dein Vorname *" maxlength="20">
     <input type="email" id="inp-email" placeholder="Deine E-Mail (optional)">
@@ -460,7 +460,7 @@ document.getElementById('los-btn').addEventListener('click', function() {
   if(email) localStorage.setItem('user_email', email);
   document.getElementById('modal').classList.add('hidden');
   applyName(name);
-  if(email) ejsSend(EJS_WEL, {name:name, reply_email:email, start:'folgt', ziel:'folgt', diff:'–'});
+  if(email) ejsSend(EJS_WEL, {name:name, toemail:email, start:'folgt', ziel:'folgt', diff:'–'});
 });
 
 function skipModal() {
@@ -576,7 +576,7 @@ function checkMilestone(pct, prev, name) {
       if(email&&goal){
         const cur=log.length>0?log[log.length-1].kg:goal.start;
         ejsSend(EJS_MIL,{
-          name:name, reply_email:email,
+          name:name, toemail:email,
           subject:m.subj.replace('{{name}}',name),
           message:m.msg,
           milestone:m.title,
@@ -683,7 +683,7 @@ function checkInactivity(){
   if(diff>=10){
     localStorage.setItem('last_inact',TODAY);
     ejsSend(EJS_MIL,{
-      name:name, reply_email:email,
+      name:name, toemail:email,
       subject:'💪 '+name+', alles okay? Wir vermissen dich!',
       message:'du warst seit '+diff+' Tagen nicht mehr aktiv.\n\nDas ist völlig normal – jeder hat mal eine schwierige Phase. Aber dein Ziel wartet noch auf dich!\n\nKomm einfach wieder rein, auch ein kleiner Schritt zählt!',
       milestone:'Erinnerung nach '+diff+' Tagen',
