@@ -158,6 +158,9 @@ header h1 { font-size: 20px; font-weight: 700; }
 <!-- WILLKOMMENS-MODAL -->
 <div class="modal-overlay" id="modal">
   <div class="modal">
+    <div style="display:flex;justify-content:flex-end;margin-bottom:-8px;">
+      <button onclick="skipModal()" style="background:none;border:none;font-size:22px;color:#aaa;cursor:pointer;padding:0 4px;line-height:1;">✕</button>
+    </div>
     <div class="modal-emoji">🥗</div>
     <h2>Willkommen!</h2>
     <p>Hier ist dein persönlicher Gesundheitsplan. Er hilft dir jeden Tag besser zu essen und dich mehr zu bewegen!</p>
@@ -165,9 +168,22 @@ header h1 { font-size: 20px; font-weight: 700; }
       <strong>🔒 Deine Daten bleiben bei dir!</strong>
       Alles was du hier einträgst wird nur auf <strong>diesem Gerät</strong> gespeichert. Nur wenn du eine Mail-Adresse einträgst, bekommst du persönliche Nachrichten von Hr. Frick.
     </div>
-    <input type="text" id="name-input" placeholder="Dein Vorname" maxlength="20" style="margin-bottom:10px;">
-    <input type="email" id="email-input" placeholder="Deine E-Mail (optional)" style="width:100%;padding:12px;border:2px solid #e0e0da;border-radius:12px;font-size:15px;text-align:center;margin-bottom:12px;">
+    <input type="text" id="name-input" placeholder="Dein Vorname" maxlength="20" style="width:100%;padding:12px;border:2px solid #e0e0da;border-radius:12px;font-size:16px;text-align:center;font-weight:700;color:#1D9E75;margin-bottom:10px;">
+    <div style="display:flex;gap:8px;margin-bottom:10px;">
+      <div style="flex:1;">
+        <div style="font-size:11px;color:#888;margin-bottom:4px;font-weight:600;">Startgewicht (kg)</div>
+        <input type="number" id="modal-start" placeholder="z.B. 90" min="30" max="200" step="0.1" style="width:100%;padding:10px;border:2px solid #e0e0da;border-radius:10px;font-size:18px;text-align:center;font-weight:700;color:#1D9E75;">
+      </div>
+      <div style="flex:1;">
+        <div style="font-size:11px;color:#888;margin-bottom:4px;font-weight:600;">Zielgewicht (kg)</div>
+        <input type="number" id="modal-ziel" placeholder="z.B. 70" min="30" max="200" step="0.1" style="width:100%;padding:10px;border:2px solid #e0e0da;border-radius:10px;font-size:18px;text-align:center;font-weight:700;color:#1D9E75;">
+      </div>
+    </div>
+    <input type="email" id="email-input" placeholder="Deine E-Mail (für Nachrichten von Hr. Frick)" style="width:100%;padding:12px;border:2px solid #e0e0da;border-radius:12px;font-size:14px;text-align:center;margin-bottom:12px;">
     <button class="modal-btn" onclick="saveName()">Los geht's! 💪</button>
+    <div style="text-align:center;margin-top:10px;">
+      <button onclick="skipModal()" style="background:none;border:none;font-size:13px;color:#aaa;cursor:pointer;text-decoration:underline;">Ohne Angaben starten</button>
+    </div>
   </div>
 </div>
 
@@ -523,32 +539,59 @@ header h1 { font-size: 20px; font-weight: 700; }
   const dn = new Date();
   document.getElementById('check-date').textContent = DAYS[dn.getDay()] + ', ' + dn.getDate() + '.' + (dn.getMonth()+1) + '.' + dn.getFullYear();
 
-  // Name handling
-  // EmailJS init
-  emailjs.init('5TDXz07ouf-xjZsyG');
+  // EmailJS config
   const EJS_SERVICE = 'service_i41l25q';
   const EJS_WELCOME = 'template_izi5zov';
   const EJS_MILESTONE = 'template_955n7ts';
 
+  function ejsSend(template, params) {
+    try {
+      if(typeof emailjs !== 'undefined') {
+        emailjs.init('5TDXz07ouf-xjZsyG');
+        emailjs.send(EJS_SERVICE, template, params);
+      }
+    } catch(e) {}
+  }
+
+  // Name handling
   function saveName() {
     const val = document.getElementById('name-input').value.trim();
-    const name = val || 'Du';
+    if(!val) { document.getElementById('name-input').style.borderColor='#e24b4a'; document.getElementById('name-input').placeholder='Bitte deinen Namen eingeben!'; return; }
+    const name = val;
     const email = document.getElementById('email-input').value.trim();
+    const st = parseFloat(document.getElementById('modal-start').value);
+    const zi = parseFloat(document.getElementById('modal-ziel').value);
     localStorage.setItem('user_name', name);
     if(email) localStorage.setItem('user_email', email);
+    // Save weight goal if provided
+    if(st && zi && st > zi) {
+      localStorage.setItem('weight_goal', JSON.stringify({start:st, ziel:zi}));
+      localStorage.setItem('weight_log', JSON.stringify([{date:TODAY, kg:st}]));
+    }
     document.getElementById('modal').classList.add('hidden');
     applyName(name);
+    renderWeight();
     // Send welcome mail if email provided
     if(email) {
-      emailjs.send(EJS_SERVICE, EJS_WELCOME, {
+      const startTxt = st ? st+' kg' : 'noch nicht eingetragen';
+      const zielTxt = zi ? zi+' kg' : 'noch nicht eingetragen';
+      const diffTxt = (st && zi) ? (st-zi)+' kg' : '–';
+      ejsSend(EJS_WELCOME, {
         name: name,
         reply_email: email,
-        start: localStorage.getItem('weight_goal') ? JSON.parse(localStorage.getItem('weight_goal')).start+' kg' : 'noch nicht eingetragen',
-        ziel: localStorage.getItem('weight_goal') ? JSON.parse(localStorage.getItem('weight_goal')).ziel+' kg' : 'noch nicht eingetragen',
-        diff: '–'
-      }).catch(()=>{});
+        start: startTxt,
+        ziel: zielTxt,
+        diff: diffTxt
+      });
     }
   }
+  function skipModal() {
+    localStorage.setItem('user_name', 'Du');
+    localStorage.setItem('modal_skipped', '1');
+    document.getElementById('modal').classList.add('hidden');
+    applyName('Du');
+  }
+
   function applyName(name) {
     // Streak bar
     document.getElementById('name-streak').textContent = name + ' ist ';
@@ -572,7 +615,6 @@ header h1 { font-size: 20px; font-weight: 700; }
     document.getElementById('modal').classList.add('hidden');
     applyName(savedName);
   } else {
-    // Pre-fill done message default
     document.getElementById('done-msg').innerHTML = '🏆 Alles erledigt!<br>Du machst das richtig super!';
   }
 
@@ -657,14 +699,14 @@ header h1 { font-size: 20px; font-weight: 700; }
     const diffDays = Math.round((now-last)/(1000*60*60*24));
     if(diffDays >= 10) {
       localStorage.setItem('last_inactivity_mail', TODAY);
-      emailjs.send(EJS_SERVICE, EJS_MILESTONE, {
+      ejsSend(EJS_MILESTONE, {
         name: name,
         reply_email: email,
         subject: '💪 '+name+', alles okay? Wir vermissen dich!',
         message: 'du warst seit '+diffDays+' Tagen nicht mehr aktiv.\n\nDas ist völlig normal – jeder hat mal eine schwierige Phase. Aber dein Ziel wartet noch auf dich!\n\nKomm einfach wieder rein, auch ein kleiner Schritt zählt!',
         milestone: 'Erinnerung nach '+diffDays+' Tagen',
         start: '', current: '', ziel: '', remaining: ''
-      }).catch(()=>{});
+      });
     }
   }
   checkInactivity();
@@ -715,7 +757,7 @@ header h1 { font-size: 20px; font-weight: 700; }
         const remaining = (cur - goal.ziel).toFixed(1);
         if(email && goal) {
           const msg = MILESTONE_MSGS[m.pct];
-          emailjs.send(EJS_SERVICE, EJS_MILESTONE, {
+          ejsSend(EJS_MILESTONE, {
             name: name,
             reply_email: email,
             subject: msg.subject.replace('{{name}}', name),
@@ -725,7 +767,7 @@ header h1 { font-size: 20px; font-weight: 700; }
             current: cur+' kg',
             ziel: goal.ziel+' kg',
             remaining: remaining+' kg'
-          }).catch(()=>{});
+          });
         }
         break;
       }
@@ -864,6 +906,6 @@ header h1 { font-size: 20px; font-weight: 700; }
   }
   renderWeight();
 </script>
-<script>if('serviceWorker' in navigator){window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{});});}</script>
+<script>if('serviceWorker' in navigator){window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js');});}</script>
 </body>
 </html>
