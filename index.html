@@ -16,16 +16,16 @@
 body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f0f4f0; color: #1a1a1a; min-height: 100vh; }
 
 /* Welcome Modal */
-.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 100; display: flex; align-items: center; justify-content: center; padding: 1.5rem; }
-.modal { background: white; border-radius: 20px; padding: 1.8rem 1.5rem; max-width: 360px; width: 100%; text-align: center; }
-.modal-emoji { font-size: 52px; margin-bottom: 10px; }
-.modal h2 { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
-.modal p { font-size: 13px; color: #555; line-height: 1.6; margin-bottom: 14px; }
-.modal-privacy { background: #f5fdf9; border-radius: 10px; padding: 10px 12px; font-size: 12px; color: #085041; margin-bottom: 16px; text-align: left; line-height: 1.6; }
-.modal-privacy strong { display: block; margin-bottom: 3px; font-size: 13px; }
-.modal input[type=text] { width: 100%; padding: 12px; border: 2px solid #e0e0da; border-radius: 12px; font-size: 20px; text-align: center; font-weight: 700; margin-bottom: 12px; color: #1D9E75; }
-.modal input[type=text]:focus { border-color: #1D9E75; outline: none; }
-.modal-btn { width: 100%; background: #1D9E75; color: white; border: none; border-radius: 12px; padding: 14px; font-size: 16px; font-weight: 700; cursor: pointer; }
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 100; display: flex; align-items: center; justify-content: center; padding: 1.2rem; }
+.modal { background: white; border-radius: 20px; padding: 1.4rem 1.3rem; max-width: 340px; width: 100%; text-align: center; position: relative; }
+.modal-emoji { font-size: 40px; margin-bottom: 8px; }
+.modal h2 { font-size: 18px; font-weight: 700; margin-bottom: 6px; }
+.modal p { font-size: 13px; color: #555; line-height: 1.5; }
+.modal-privacy { background: #f5fdf9; border-radius: 10px; padding: 8px 10px; font-size: 11px; color: #085041; margin-bottom: 12px; text-align: left; line-height: 1.5; }
+.modal-privacy strong { display: block; margin-bottom: 2px; font-size: 12px; }
+.modal input[type=text], .modal input[type=email] { width: 100%; padding: 11px; border: 2px solid #e0e0da; border-radius: 12px; font-size: 16px; text-align: center; font-weight: 600; margin-bottom: 10px; color: #1D9E75; display: block; }
+.modal input:focus { border-color: #1D9E75; outline: none; }
+.modal-btn { width: 100%; background: #1D9E75; color: white; border: none; border-radius: 12px; padding: 13px; font-size: 15px; font-weight: 700; cursor: pointer; }
 
 header { background: linear-gradient(135deg, #1D9E75, #0F6E56); color: white; padding: 1rem 1rem 0.8rem; text-align: center; }
 header h1 { font-size: 20px; font-weight: 700; }
@@ -158,35 +158,20 @@ header h1 { font-size: 20px; font-weight: 700; }
 <!-- WILLKOMMENS-MODAL -->
 <div class="modal-overlay" id="modal">
   <div class="modal">
-    <div style="display:flex;justify-content:flex-end;margin-bottom:-8px;">
-      <button onclick="skipModal()" style="background:none;border:none;font-size:22px;color:#aaa;cursor:pointer;padding:0 4px;line-height:1;">✕</button>
-    </div>
+    <button onclick="skipModal()" style="position:absolute;top:12px;right:14px;background:none;border:none;font-size:24px;color:#aaa;cursor:pointer;line-height:1;">✕</button>
     <div class="modal-emoji">🥗</div>
     <h2>Willkommen!</h2>
-    <p>Hier ist dein persönlicher Gesundheitsplan. Er hilft dir jeden Tag besser zu essen und dich mehr zu bewegen!</p>
+    <p style="margin-bottom:12px;">Dein persönlicher Plan zum Abnehmen – jeden Tag ein Schritt!</p>
     <div class="modal-privacy">
-      <strong>🔒 Deine Daten bleiben bei dir!</strong>
-      Alles was du hier einträgst wird nur auf <strong>diesem Gerät</strong> gespeichert. Nur wenn du eine Mail-Adresse einträgst, bekommst du persönliche Nachrichten von Hr. Frick.
+      <strong>🔒 Alles bleibt auf deinem Gerät!</strong>
+      Nur wenn du eine E-Mail einträgst, bekommst du Nachrichten von Hr. Frick.
     </div>
-    <input type="text" id="name-input" placeholder="Dein Vorname" maxlength="20" style="width:100%;padding:12px;border:2px solid #e0e0da;border-radius:12px;font-size:16px;text-align:center;font-weight:700;color:#1D9E75;margin-bottom:10px;">
-    <div style="display:flex;gap:8px;margin-bottom:10px;">
-      <div style="flex:1;">
-        <div style="font-size:11px;color:#888;margin-bottom:4px;font-weight:600;">Startgewicht (kg)</div>
-        <input type="number" id="modal-start" placeholder="z.B. 90" min="30" max="200" step="0.1" style="width:100%;padding:10px;border:2px solid #e0e0da;border-radius:10px;font-size:18px;text-align:center;font-weight:700;color:#1D9E75;">
-      </div>
-      <div style="flex:1;">
-        <div style="font-size:11px;color:#888;margin-bottom:4px;font-weight:600;">Zielgewicht (kg)</div>
-        <input type="number" id="modal-ziel" placeholder="z.B. 70" min="30" max="200" step="0.1" style="width:100%;padding:10px;border:2px solid #e0e0da;border-radius:10px;font-size:18px;text-align:center;font-weight:700;color:#1D9E75;">
-      </div>
-    </div>
-    <input type="email" id="email-input" placeholder="Deine E-Mail (für Nachrichten von Hr. Frick)" style="width:100%;padding:12px;border:2px solid #e0e0da;border-radius:12px;font-size:14px;text-align:center;margin-bottom:12px;">
+    <input type="text" id="name-input" placeholder="Dein Vorname *" maxlength="20">
+    <input type="email" id="email-input" placeholder="Deine E-Mail (optional)">
     <button class="modal-btn" onclick="saveName()">Los geht's! 💪</button>
-    <div style="text-align:center;margin-top:10px;">
-      <button onclick="skipModal()" style="background:none;border:none;font-size:13px;color:#aaa;cursor:pointer;text-decoration:underline;">Ohne Angaben starten</button>
-    </div>
+    <button onclick="skipModal()" style="background:none;border:none;width:100%;margin-top:10px;font-size:13px;color:#aaa;cursor:pointer;text-decoration:underline;">Ohne Angaben starten</button>
   </div>
 </div>
-
 <header>
   <h1>🥗 Mein Gesundheitsplan</h1>
 </header>
@@ -556,32 +541,25 @@ header h1 { font-size: 20px; font-weight: 700; }
   // Name handling
   function saveName() {
     const val = document.getElementById('name-input').value.trim();
-    if(!val) { document.getElementById('name-input').style.borderColor='#e24b4a'; document.getElementById('name-input').placeholder='Bitte deinen Namen eingeben!'; return; }
+    if(!val) {
+      document.getElementById('name-input').style.borderColor='#e24b4a';
+      document.getElementById('name-input').placeholder='Bitte Namen eingeben!';
+      return;
+    }
     const name = val;
     const email = document.getElementById('email-input').value.trim();
-    const st = parseFloat(document.getElementById('modal-start').value);
-    const zi = parseFloat(document.getElementById('modal-ziel').value);
     localStorage.setItem('user_name', name);
     if(email) localStorage.setItem('user_email', email);
-    // Save weight goal if provided
-    if(st && zi && st > zi) {
-      localStorage.setItem('weight_goal', JSON.stringify({start:st, ziel:zi}));
-      localStorage.setItem('weight_log', JSON.stringify([{date:TODAY, kg:st}]));
-    }
     document.getElementById('modal').classList.add('hidden');
     applyName(name);
-    renderWeight();
     // Send welcome mail if email provided
     if(email) {
-      const startTxt = st ? st+' kg' : 'noch nicht eingetragen';
-      const zielTxt = zi ? zi+' kg' : 'noch nicht eingetragen';
-      const diffTxt = (st && zi) ? (st-zi)+' kg' : '–';
       ejsSend(EJS_WELCOME, {
         name: name,
         reply_email: email,
-        start: startTxt,
-        ziel: zielTxt,
-        diff: diffTxt
+        start: 'wird noch eingetragen',
+        ziel: 'wird noch eingetragen',
+        diff: '–'
       });
     }
   }
