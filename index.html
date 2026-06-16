@@ -179,8 +179,9 @@ header h1{font-size:20px;font-weight:700}
     <h2>Willkommen!</h2>
     <p>Dein persönlicher Plan zum Abnehmen – jeden Tag ein Schritt!</p>
     <div class="modal-info">
-      <strong>🔒 Alles bleibt auf deinem Gerät!</strong>
-      Nur wenn du eine E-Mail einträgst, bekommst du Nachrichten von Hr. Frick.
+      <strong>🔒 Deine Daten sind sicher!</strong>
+      Alles was du einträgst – Name, Gewicht, Checkliste – wird <strong>nur auf diesem Gerät</strong> gespeichert. Niemand kann das sehen.<br><br>
+      <strong>📬 Optional:</strong> Wenn du deine E-Mail einträgst, kann Hr. Frick dich bei Meilensteinen kontaktieren und dir deinen Fortschritt zuschicken.
     </div>
     <input type="text" id="inp-name" placeholder="Dein Vorname *" maxlength="20">
     <input type="email" id="inp-email" placeholder="Deine E-Mail (optional)">
@@ -389,7 +390,7 @@ header h1{font-size:20px;font-weight:700}
     <div id="w-sunday" class="hidden">
       <div class="card-g" style="text-align:center;padding:1.4rem 1rem">
         <div style="font-size:44px">⚖️</div>
-        <div style="font-size:17px;font-weight:700;color:#085041;margin:8px 0 4px" id="w-sun-title">Zeit zum Wiegen!</div>
+        <div style="font-size:17px;font-weight:700;color:#085041;margin:8px 0 4px" id="w-sun-title">Heute ist Wiege-Tag! ⚖️</div>
         <div style="font-size:13px;color:#0F6E56;margin-bottom:14px">Trag dein heutiges Gewicht ein:</div>
         <div class="win"><input type="number" id="w-new" placeholder="kg" min="30" max="200" step="0.1"><button onclick="addWeight()">✓</button></div>
       </div>
@@ -402,7 +403,7 @@ header h1{font-size:20px;font-weight:700}
       </div>
     </div>
     <div class="card">
-      <div style="font-size:13px;font-weight:700;color:#888;margin-bottom:10px">📋 Wöchentlicher Verlauf</div>
+      <div style="font-size:13px;font-weight:700;color:#888;margin-bottom:10px">📋 Mein Gewichtsverlauf</div>
       <div id="w-log"></div>
     </div>
     <button class="rbtn" onclick="resetGoal()">Ziel zurücksetzen</button>
@@ -646,7 +647,7 @@ function renderWeight(){
     document.getElementById('w-sunday').classList.remove('hidden');
     document.getElementById('w-wait').classList.add('hidden');
     const wt=document.getElementById('w-sun-title');
-    if(wt) wt.textContent='Zeit zum Wiegen, '+name+'! 💪';
+    if(wt) wt.textContent='Heute ist Wiege-Tag, '+name+'! ⚖️';
   } else if(isSun&&alreadyToday){
     document.getElementById('w-sunday').classList.add('hidden');
     document.getElementById('w-wait').classList.remove('hidden');
@@ -655,7 +656,7 @@ function renderWeight(){
     document.getElementById('w-sunday').classList.add('hidden');
     document.getElementById('w-wait').classList.remove('hidden');
     const d=(7-DN.getDay())%7||7;
-    document.getElementById('w-wait-txt').textContent='Nächste Wägung in '+d+' Tag'+(d===1?'':'en')+' (Sonntag)!';
+    document.getElementById('w-wait-txt').textContent='Nächste Wiegen in '+d+' Tag'+(d===1?'':'en')+' (Sonntag)!';
   }
   const cont=document.getElementById('w-log');
   cont.innerHTML='';
