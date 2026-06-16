@@ -6,884 +6,692 @@
 <title>Mein Gesundheitsplan</title>
 <meta name="theme-color" content="#1D9E75">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Gesundheitsplan">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon-192.png">
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <style>
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f0f4f0; color: #1a1a1a; min-height: 100vh; }
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f0f4f0;color:#1a1a1a;min-height:100vh}
 
-/* Welcome Modal */
-.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 100; display: flex; align-items: center; justify-content: center; padding: 1.2rem; }
-.modal { background: white; border-radius: 20px; padding: 1.4rem 1.3rem; max-width: 340px; width: 100%; text-align: center; position: relative; }
-.modal-emoji { font-size: 40px; margin-bottom: 8px; }
-.modal h2 { font-size: 18px; font-weight: 700; margin-bottom: 6px; }
-.modal p { font-size: 13px; color: #555; line-height: 1.5; }
-.modal-privacy { background: #f5fdf9; border-radius: 10px; padding: 8px 10px; font-size: 11px; color: #085041; margin-bottom: 12px; text-align: left; line-height: 1.5; }
-.modal-privacy strong { display: block; margin-bottom: 2px; font-size: 12px; }
-.modal input[type=text], .modal input[type=email] { width: 100%; padding: 11px; border: 2px solid #e0e0da; border-radius: 12px; font-size: 16px; text-align: center; font-weight: 600; margin-bottom: 10px; color: #1D9E75; display: block; }
-.modal input:focus { border-color: #1D9E75; outline: none; }
-.modal-btn { width: 100%; background: #1D9E75; color: white; border: none; border-radius: 12px; padding: 13px; font-size: 15px; font-weight: 700; cursor: pointer; }
+/* MODAL */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:999;display:flex;align-items:center;justify-content:center;padding:1rem}
+.modal{background:white;border-radius:20px;padding:1.4rem 1.3rem;max-width:340px;width:100%;text-align:center;position:relative}
+.modal-x{position:absolute;top:10px;right:14px;background:none;border:none;font-size:22px;color:#bbb;cursor:pointer;line-height:1}
+.modal h2{font-size:18px;font-weight:700;margin:8px 0 6px}
+.modal p{font-size:13px;color:#555;line-height:1.5;margin-bottom:10px}
+.modal-info{background:#f5fdf9;border-radius:10px;padding:8px 10px;font-size:11px;color:#085041;margin-bottom:12px;text-align:left;line-height:1.5}
+.modal-info strong{display:block;font-size:12px;margin-bottom:2px}
+.modal input{width:100%;padding:11px;border:2px solid #e0e0da;border-radius:12px;font-size:16px;text-align:center;font-weight:600;color:#1a1a1a;margin-bottom:10px;display:block}
+.modal input:focus{border-color:#1D9E75;outline:none}
+.modal-btn{width:100%;background:#1D9E75;color:white;border:none;border-radius:12px;padding:14px;font-size:16px;font-weight:700;cursor:pointer;display:block;margin-bottom:10px}
+.modal-skip{background:none;border:none;width:100%;font-size:13px;color:#aaa;cursor:pointer;text-decoration:underline}
 
-header { background: linear-gradient(135deg, #1D9E75, #0F6E56); color: white; padding: 1rem 1rem 0.8rem; text-align: center; }
-header h1 { font-size: 20px; font-weight: 700; }
-.streak-bar { background: #0a5240; padding: 8px; text-align: center; font-size: 13px; color: #9FE1CB; }
-.streak-bar strong { color: white; font-size: 15px; }
+/* HEADER */
+header{background:linear-gradient(135deg,#1D9E75,#0F6E56);color:white;padding:1rem;text-align:center}
+header h1{font-size:20px;font-weight:700}
+.streak-bar{background:#0a5240;padding:8px;text-align:center;font-size:13px;color:#9FE1CB}
+.streak-bar strong{color:white;font-size:15px}
 
-.tab-row { display: flex; background: white; border-bottom: 1px solid #e0e0da; overflow-x: auto; position: sticky; top: 0; z-index: 10; }
-.tab { flex: 1; min-width: 58px; padding: 12px 4px 10px; text-align: center; font-size: 11px; color: #888; cursor: pointer; border-bottom: 3px solid transparent; }
-.tab .tab-icon { font-size: 20px; display: block; margin-bottom: 2px; }
-.tab.active { color: #1D9E75; border-bottom-color: #1D9E75; font-weight: 600; }
+/* TABS */
+.tab-row{display:flex;background:white;border-bottom:1px solid #e0e0da;overflow-x:auto;position:sticky;top:0;z-index:10}
+.tab{flex:1;min-width:56px;padding:11px 4px 9px;text-align:center;font-size:11px;color:#888;cursor:pointer;border-bottom:3px solid transparent}
+.tab .ti{font-size:19px;display:block;margin-bottom:2px}
+.tab.active{color:#1D9E75;border-bottom-color:#1D9E75;font-weight:600}
 
-.content { max-width: 500px; margin: 0 auto; padding: 1rem 0.9rem 4rem; }
+/* CONTENT */
+.content{max-width:500px;margin:0 auto;padding:1rem 0.9rem 4rem}
+.hidden{display:none!important}
 
-.vis-card { background: white; border-radius: 16px; padding: 1rem; margin-bottom: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.07); }
-.vis-card-green { background: linear-gradient(135deg, #E1F5EE, #c8ead9); border-radius: 16px; padding: 1rem; margin-bottom: 12px; }
-.vis-card-amber { background: linear-gradient(135deg, #FAEEDA, #f5d9a0); border-radius: 16px; padding: 1rem; margin-bottom: 12px; }
-.vis-card-red { background: linear-gradient(135deg, #FCEBEB, #f5c1c1); border-radius: 16px; padding: 1rem; margin-bottom: 12px; }
+/* CARDS */
+.card{background:white;border-radius:16px;padding:1rem;margin-bottom:12px;box-shadow:0 1px 4px rgba(0,0,0,.07)}
+.card-g{background:linear-gradient(135deg,#E1F5EE,#c8ead9);border-radius:16px;padding:1rem;margin-bottom:12px}
+.card-a{background:linear-gradient(135deg,#FAEEDA,#f5d9a0);border-radius:16px;padding:1rem;margin-bottom:12px}
+.card-r{background:linear-gradient(135deg,#FCEBEB,#f5c1c1);border-radius:16px;padding:1rem;margin-bottom:12px}
+.ch{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.ci{font-size:28px;flex-shrink:0}
+.ct{font-size:15px;font-weight:600}
+.cs{font-size:12px;color:#666;margin-top:1px}
+.sl{font-size:11px;font-weight:700;color:#1D9E75;text-transform:uppercase;letter-spacing:.8px;margin:1.2rem 0 .6rem}
 
-.card-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
-.card-icon { font-size: 28px; flex-shrink: 0; }
-.card-title { font-size: 15px; font-weight: 600; color: #1a1a1a; }
-.card-sub { font-size: 12px; color: #666; margin-top: 1px; }
+/* FOOD GRID */
+.fg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}
+.fi{text-align:center;background:white;border-radius:12px;padding:10px 6px}
+.fe{font-size:30px;display:block;margin-bottom:4px}
+.fn{font-size:11px;color:#444;line-height:1.3}
 
-.meal-visual { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 8px; }
-.food-item { text-align: center; background: white; border-radius: 12px; padding: 10px 6px; }
-.food-emoji { font-size: 30px; display: block; margin-bottom: 4px; }
-.food-name { font-size: 11px; color: #444; line-height: 1.3; }
+/* RULES */
+.rg{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.ri{background:white;border-radius:14px;padding:14px 10px;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.ri .e{font-size:32px;margin-bottom:6px;display:block}
+.ri p{font-size:12px;color:#333;line-height:1.4;font-weight:500}
 
-.rules-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
-.rule-item { background: white; border-radius: 14px; padding: 14px 10px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
-.rule-item .ri { font-size: 32px; margin-bottom: 6px; display: block; }
-.rule-item p { font-size: 12px; color: #333; line-height: 1.4; font-weight: 500; }
+/* DRINKS */
+.dg{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.di{border-radius:14px;padding:14px 12px;text-align:center}
+.di .e{font-size:32px;display:block;margin-bottom:6px}
+.di p{font-size:12px;font-weight:600;line-height:1.3}
+.dg{background:transparent}
+.dok{background:#E1F5EE;color:#085041}
+.dwa{background:#FAEEDA;color:#633806}
+.dno{background:#FCEBEB;color:#7a1f1f}
 
-.slabel { font-size: 11px; font-weight: 700; color: #1D9E75; text-transform: uppercase; letter-spacing: 0.8px; margin: 1.2rem 0 0.6rem; }
+/* WATER */
+.wg{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0;justify-content:center}
+.gl{width:38px;height:48px;border:2.5px solid #1D9E75;border-radius:5px 5px 9px 9px;cursor:pointer;position:relative;overflow:hidden;background:transparent}
+.gl-fill{position:absolute;bottom:0;left:0;right:0;height:75%;background:#1D9E75;border-radius:0 0 6px 6px;opacity:0;transition:opacity .2s}
+.gl.on .gl-fill{opacity:1}
+.gl-n{position:absolute;top:2px;left:0;right:0;text-align:center;font-size:9px;color:#1D9E75}
+.gl.on .gl-n{color:white}
+.pr{display:flex;align-items:center;gap:10px;margin-top:8px}
+.pt{flex:1;height:8px;background:#e0e0da;border-radius:99px;overflow:hidden}
+.pf{height:100%;background:linear-gradient(90deg,#1D9E75,#5DCAA5);border-radius:99px;transition:width .3s}
 
-.drink-visual { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-.drink-item { border-radius: 14px; padding: 14px 12px; text-align: center; }
-.drink-item .di { font-size: 32px; display: block; margin-bottom: 6px; }
-.drink-item p { font-size: 12px; font-weight: 600; line-height: 1.3; }
-.d-green { background: #E1F5EE; color: #085041; }
-.d-amber { background: #FAEEDA; color: #633806; }
-.d-red { background: #FCEBEB; color: #7a1f1f; }
+/* EXERCISE */
+.eg{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.ei{background:white;border-radius:16px;padding:14px 12px;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.ei .e{font-size:36px;display:block;margin-bottom:6px}
+.ei .n{font-size:13px;font-weight:600;margin-bottom:3px}
+.ei .d{font-size:11px;color:#888;margin-bottom:6px}
+.eb{display:inline-block;background:#E1F5EE;color:#085041;font-size:10px;font-weight:600;padding:3px 8px;border-radius:99px}
 
-.water-grid { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0; justify-content: center; }
-.glass { width: 38px; height: 48px; border: 2.5px solid #1D9E75; border-radius: 5px 5px 9px 9px; cursor: pointer; background: transparent; position: relative; overflow: hidden; }
-.glass-fill { position: absolute; bottom: 0; left: 0; right: 0; height: 75%; background: #1D9E75; border-radius: 0 0 6px 6px; opacity: 0; transition: opacity 0.2s; }
-.glass.filled .glass-fill { opacity: 1; }
-.glass-label { position: absolute; top: 2px; left: 0; right: 0; text-align: center; font-size: 9px; color: #1D9E75; }
-.glass.filled .glass-label { color: white; }
-.progress-row { display: flex; align-items: center; gap: 10px; margin-top: 8px; }
-.progress-track { flex: 1; height: 8px; background: #e0e0da; border-radius: 99px; overflow: hidden; }
-.progress-fill { height: 100%; background: linear-gradient(90deg,#1D9E75,#5DCAA5); border-radius: 99px; transition: width 0.3s; }
+/* WEEK */
+.wk{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:1rem}
+.wd{text-align:center}
+.wn{font-size:10px;color:#888;margin-bottom:4px;font-weight:600}
+.wc{width:36px;height:36px;border-radius:50%;margin:0 auto 3px;display:flex;align-items:center;justify-content:center;font-size:16px}
+.ws{background:#E1F5EE}
+.wr{background:#f0f0ea}
+.wt{font-size:9px;color:#888;line-height:1.3}
 
-.ex-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.ex-item { background: white; border-radius: 16px; padding: 14px 12px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
-.ex-item .ei { font-size: 36px; display: block; margin-bottom: 6px; }
-.ex-item .en { font-size: 13px; font-weight: 600; color: #1a1a1a; margin-bottom: 3px; }
-.ex-item .ed { font-size: 11px; color: #888; margin-bottom: 6px; }
-.ex-badge { display: inline-block; background: #E1F5EE; color: #085041; font-size: 10px; font-weight: 600; padding: 3px 8px; border-radius: 99px; }
+/* TIME PLAN */
+.tp{display:flex;flex-direction:column}
+.ti2{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid #f0f0ea}
+.ti2:last-child{border-bottom:none}
+.tb{background:#1D9E75;color:white;font-size:11px;font-weight:700;padding:4px 8px;border-radius:8px;min-width:52px;text-align:center;flex-shrink:0}
+.tb.am{background:#f0a020}
+.tb.gr{background:#aaa}
+.te2{font-size:24px;flex-shrink:0}
+.tt{font-size:13px;font-weight:500}
+.ts{font-size:11px;color:#888}
 
-.week-grid { display: grid; grid-template-columns: repeat(7,1fr); gap: 4px; margin-bottom: 1rem; }
-.wday { text-align: center; }
-.wday-name { font-size: 10px; color: #888; margin-bottom: 4px; font-weight: 600; }
-.wday-circle { width: 36px; height: 36px; border-radius: 50%; margin: 0 auto 3px; display: flex; align-items: center; justify-content: center; font-size: 16px; }
-.wday-sport { background: #E1F5EE; }
-.wday-rest { background: #f0f0ea; }
-.wday-note { font-size: 9px; color: #888; line-height: 1.3; }
+/* CHECKLIST */
+.ck{display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:.5px solid #f0f0ea;cursor:pointer}
+.ck:last-child{border-bottom:none}
+.cb{width:26px;height:26px;border-radius:8px;border:2.5px solid #ccc;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .15s;font-size:14px}
+.cb.on{background:#1D9E75;border-color:#1D9E75;color:white}
+.ctl{font-size:14px;color:#1a1a1a;flex:1}
+.ctl.on{text-decoration:line-through;color:#bbb}
+.cie{font-size:20px;flex-shrink:0}
+.done-msg{background:linear-gradient(135deg,#1D9E75,#0F6E56);color:white;border-radius:16px;padding:1.2rem;text-align:center;font-size:16px;font-weight:600;margin:10px 0}
 
-.time-plan { display: flex; flex-direction: column; gap: 0; }
-.time-item { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid #f0f0ea; }
-.time-item:last-child { border-bottom: none; }
-.time-badge { background: #1D9E75; color: white; font-size: 11px; font-weight: 700; padding: 4px 8px; border-radius: 8px; min-width: 52px; text-align: center; flex-shrink: 0; }
-.time-badge.amber { background: #f0a020; }
-.time-badge.gray { background: #aaa; }
-.time-emoji { font-size: 24px; flex-shrink: 0; }
-.time-text { font-size: 13px; font-weight: 500; }
-.time-sub { font-size: 11px; color: #888; }
+/* MENSA */
+.ms{display:flex;flex-direction:column;gap:8px;margin-top:8px}
+.ms-i{display:flex;align-items:center;gap:10px;background:white;border-radius:12px;padding:10px 12px}
+.mn{width:26px;height:26px;border-radius:50%;background:#1D9E75;color:white;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.mt{font-size:13px;font-weight:500}
+.me{font-size:20px;flex-shrink:0}
 
-.check-item { display: flex; align-items: center; gap: 12px; padding: 13px 0; border-bottom: 0.5px solid #f0f0ea; cursor: pointer; }
-.check-item:last-child { border-bottom: none; }
-.check-box { width: 26px; height: 26px; border-radius: 8px; border: 2.5px solid #ccc; flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all 0.15s; font-size: 14px; }
-.check-box.done { background: #1D9E75; border-color: #1D9E75; color: white; }
-.check-text { font-size: 14px; color: #1a1a1a; flex: 1; }
-.check-text.done { text-decoration: line-through; color: #bbb; }
-.check-icon { font-size: 20px; flex-shrink: 0; }
+/* PILLS */
+.pills{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.pill{background:white;border-radius:99px;padding:8px 14px;font-size:13px;display:flex;align-items:center;gap:6px;font-weight:500}
 
-.mensa-steps { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
-.mensa-step { display: flex; align-items: center; gap: 10px; background: white; border-radius: 12px; padding: 10px 12px; }
-.step-num { width: 26px; height: 26px; border-radius: 50%; background: #1D9E75; color: white; font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-.step-text { font-size: 13px; color: #1a1a1a; font-weight: 500; }
-.step-emoji { font-size: 20px; flex-shrink: 0; }
+/* WEIGHT */
+.ws2{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px}
+.wst{background:white;border-radius:12px;padding:12px 8px;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.wv{font-size:22px;font-weight:700;color:#1D9E75}
+.wl{font-size:10px;color:#888;margin-top:2px;font-weight:600;text-transform:uppercase}
+.wb{height:14px;background:#e0e0da;border-radius:99px;overflow:hidden;margin-bottom:4px}
+.wbf{height:100%;background:linear-gradient(90deg,#1D9E75,#5DCAA5);border-radius:99px;transition:width .6s}
+.wm{font-size:14px;color:#085041;font-weight:500;text-align:center;padding:10px;background:#E1F5EE;border-radius:10px;margin:10px 0}
+.wle{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:.5px solid #f0f0ea}
+.wle:last-child{border-bottom:none}
+.wld{font-size:12px;color:#888}
+.wlk{font-size:15px;font-weight:700}
+.wlg{font-size:12px;color:#1D9E75;font-weight:600}
+.wlb{font-size:12px;color:#e24b4a;font-weight:600}
+.win{display:flex;gap:8px;margin-top:12px}
+.win input{flex:1;padding:10px;border:2px solid #e0e0da;border-radius:10px;font-size:18px;text-align:center;font-weight:700;color:#1D9E75}
+.win input:focus{border-color:#1D9E75;outline:none}
+.win button{background:#1D9E75;color:white;border:none;border-radius:10px;padding:10px 16px;font-size:22px;cursor:pointer;font-weight:700}
+.wsetup{background:white;border-radius:16px;padding:1.25rem;margin-bottom:12px;box-shadow:0 1px 4px rgba(0,0,0,.07)}
+.wig{display:flex;gap:10px;margin:12px 0}
+.wig-g{flex:1}
+.wig-g label{font-size:11px;color:#888;display:block;margin-bottom:4px;font-weight:600}
+.wig-g input{width:100%;padding:10px;border:2px solid #e0e0da;border-radius:10px;font-size:18px;text-align:center;font-weight:700;color:#1D9E75}
+.wig-g input:focus{border-color:#1D9E75;outline:none}
+.sbtn{width:100%;background:#1D9E75;color:white;border:none;border-radius:12px;padding:12px;font-size:15px;font-weight:700;cursor:pointer;margin-top:4px}
+.rbtn{background:none;border:1px solid #ddd;border-radius:8px;padding:8px 14px;font-size:12px;color:#aaa;cursor:pointer;width:100%;margin-top:8px}
 
-.always-ok { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
-.ok-pill { background: white; border-radius: 99px; padding: 8px 14px; font-size: 13px; display: flex; align-items: center; gap: 6px; font-weight: 500; }
-
-.weight-setup { background: white; border-radius: 16px; padding: 1.25rem; margin-bottom: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.07); }
-.weight-inputs { display: flex; gap: 10px; margin: 12px 0; }
-.winput-group { flex: 1; }
-.winput-group label { font-size: 11px; color: #888; display: block; margin-bottom: 4px; font-weight: 600; }
-.winput-group input { width: 100%; padding: 10px; border: 2px solid #e0e0da; border-radius: 10px; font-size: 18px; text-align: center; font-weight: 700; color: #1D9E75; }
-.winput-group input:focus { border-color: #1D9E75; outline: none; }
-.save-btn { width: 100%; background: #1D9E75; color: white; border: none; border-radius: 12px; padding: 12px; font-size: 15px; font-weight: 700; cursor: pointer; margin-top: 4px; }
-
-.w-stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 14px; }
-.w-stat { background: white; border-radius: 12px; padding: 12px 8px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
-.w-stat .wval { font-size: 22px; font-weight: 700; color: #1D9E75; }
-.w-stat .wlbl { font-size: 10px; color: #888; margin-top: 2px; font-weight: 600; text-transform: uppercase; }
-.w-bar-wrap { height: 14px; background: #e0e0da; border-radius: 99px; overflow: hidden; margin-bottom: 4px; }
-.w-bar-fill { height: 100%; background: linear-gradient(90deg,#1D9E75,#5DCAA5); border-radius: 99px; transition: width 0.6s; }
-.w-motivate { font-size: 14px; color: #085041; font-weight: 500; text-align: center; padding: 10px; background: #E1F5EE; border-radius: 10px; margin: 10px 0; }
-.w-log-entry { display: flex; justify-content: space-between; align-items: center; padding: 9px 0; border-bottom: 0.5px solid #f0f0ea; }
-.w-log-entry:last-child { border-bottom: none; }
-.wle-date { font-size: 12px; color: #888; }
-.wle-kg { font-size: 15px; font-weight: 700; }
-.wle-diff-good { font-size: 12px; color: #1D9E75; font-weight: 600; }
-.wle-diff-bad { font-size: 12px; color: #e24b4a; font-weight: 600; }
-.add-w-row { display: flex; gap: 8px; margin-top: 12px; }
-.add-w-row input { flex: 1; padding: 10px; border: 2px solid #e0e0da; border-radius: 10px; font-size: 18px; text-align: center; font-weight: 700; color: #1D9E75; }
-.add-w-row input:focus { border-color: #1D9E75; outline: none; }
-.add-w-btn { background: #1D9E75; color: white; border: none; border-radius: 10px; padding: 10px 16px; font-size: 22px; cursor: pointer; font-weight: 700; }
-
-.reset-btn { background: none; border: 1px solid #ddd; border-radius: 8px; padding: 8px 14px; font-size: 12px; color: #aaa; cursor: pointer; width: 100%; margin-top: 8px; }
-.done-msg { background: linear-gradient(135deg,#1D9E75,#0F6E56); color: white; border-radius: 16px; padding: 1.2rem; text-align: center; font-size: 16px; font-weight: 600; margin: 10px 0; }
-.name-highlight { color: #1D9E75; font-weight: 700; }
-.hidden { display: none !important; }
+/* MILESTONE OVERLAY */
+.ml-ov{position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:200;display:flex;align-items:center;justify-content:center;padding:1.5rem}
+.ml-box{background:white;border-radius:20px;padding:2rem 1.5rem;max-width:320px;width:100%;text-align:center}
+.ml-btn{margin-top:16px;width:100%;background:#1D9E75;color:white;border:none;border-radius:12px;padding:12px;font-size:15px;font-weight:700;cursor:pointer}
 </style>
 </head>
 <body>
 
-<!-- WILLKOMMENS-MODAL -->
-<div class="modal-overlay" id="modal">
+<!-- MODAL -->
+<div class="overlay" id="modal">
   <div class="modal">
-    <button onclick="skipModal()" style="position:absolute;top:12px;right:14px;background:none;border:none;font-size:24px;color:#aaa;cursor:pointer;line-height:1;">✕</button>
-    <div class="modal-emoji">🥗</div>
+    <button class="modal-x" onclick="skipModal()">✕</button>
+    <div style="font-size:40px">🥗</div>
     <h2>Willkommen!</h2>
-    <p style="margin-bottom:12px;">Dein persönlicher Plan zum Abnehmen – jeden Tag ein Schritt!</p>
-    <div class="modal-privacy">
+    <p>Dein persönlicher Plan zum Abnehmen – jeden Tag ein Schritt!</p>
+    <div class="modal-info">
       <strong>🔒 Alles bleibt auf deinem Gerät!</strong>
       Nur wenn du eine E-Mail einträgst, bekommst du Nachrichten von Hr. Frick.
     </div>
-    <input type="text" id="name-input" placeholder="Dein Vorname *" maxlength="20">
-    <input type="email" id="email-input" placeholder="Deine E-Mail (optional)">
-    <button class="modal-btn" onclick="saveName()">Los geht's! 💪</button>
-    <button onclick="skipModal()" style="background:none;border:none;width:100%;margin-top:10px;font-size:13px;color:#aaa;cursor:pointer;text-decoration:underline;">Ohne Angaben starten</button>
+    <input type="text" id="inp-name" placeholder="Dein Vorname *" maxlength="20">
+    <input type="email" id="inp-email" placeholder="Deine E-Mail (optional)">
+    <button class="modal-btn" id="los-btn">Los geht's! 💪</button>
+    <button class="modal-skip" onclick="skipModal()">Ohne Angaben starten</button>
   </div>
 </div>
-<header>
-  <h1>🥗 Mein Gesundheitsplan</h1>
-</header>
-<div class="streak-bar">🔥 <span id="name-streak"></span><strong id="streak-count">0</strong> Tage in Folge dabei!</div>
+
+<!-- MILESTONE OVERLAY -->
+<div class="ml-ov hidden" id="ml-ov">
+  <div class="ml-box">
+    <div style="font-size:60px" id="ml-emoji">🎉</div>
+    <div style="font-size:22px;font-weight:700;margin:10px 0 6px" id="ml-title"></div>
+    <div style="font-size:14px;color:#555;line-height:1.6" id="ml-text"></div>
+    <button class="ml-btn" onclick="document.getElementById('ml-ov').classList.add('hidden')">Weiter so! 💪</button>
+  </div>
+</div>
+
+<header><h1>🥗 Mein Gesundheitsplan</h1></header>
+<div class="streak-bar">🔥 <span id="name-streak"></span><strong id="streak-n">0</strong> Tage dabei!</div>
 
 <div class="tab-row">
-  <div class="tab active" onclick="showTab('essen',this)"><span class="tab-icon">🍽️</span>Essen</div>
-  <div class="tab" onclick="showTab('trinken',this)"><span class="tab-icon">💧</span>Trinken</div>
-  <div class="tab" onclick="showTab('sport',this)"><span class="tab-icon">🏃</span>Sport</div>
-  <div class="tab" onclick="showTab('woche',this)"><span class="tab-icon">📅</span>Plan</div>
-  <div class="tab" onclick="showTab('gewicht',this)"><span class="tab-icon">⚖️</span>Gewicht</div>
-  <div class="tab" onclick="showTab('check',this)"><span class="tab-icon">✅</span>Heute</div>
+  <div class="tab active" onclick="showTab('essen',this)"><span class="ti">🍽️</span>Essen</div>
+  <div class="tab" onclick="showTab('trinken',this)"><span class="ti">💧</span>Trinken</div>
+  <div class="tab" onclick="showTab('sport',this)"><span class="ti">🏃</span>Sport</div>
+  <div class="tab" onclick="showTab('woche',this)"><span class="ti">📅</span>Plan</div>
+  <div class="tab" onclick="showTab('gewicht',this)"><span class="ti">⚖️</span>Gewicht</div>
+  <div class="tab" onclick="showTab('check',this)"><span class="ti">✅</span>Heute</div>
 </div>
 
 <div class="content">
 
 <!-- ESSEN -->
 <div id="tab-essen">
-  <div class="slabel">Die 4 goldenen Regeln</div>
-  <div class="rules-grid">
-    <div class="rule-item"><span class="ri">🍽️</span><p>3 Mahlzeiten am Tag</p></div>
-    <div class="rule-item"><span class="ri">🐢</span><p>Langsam essen & kauen</p></div>
-    <div class="rule-item"><span class="ri">📵</span><p>Handy weg beim Essen</p></div>
-    <div class="rule-item"><span class="ri">🛑</span><p>Stopp wenn satt!</p></div>
+  <div class="sl">Die 4 goldenen Regeln</div>
+  <div class="rg">
+    <div class="ri"><span class="e">🍽️</span><p>3 Mahlzeiten am Tag</p></div>
+    <div class="ri"><span class="e">🐢</span><p>Langsam essen & kauen</p></div>
+    <div class="ri"><span class="e">📵</span><p>Handy weg beim Essen</p></div>
+    <div class="ri"><span class="e">🛑</span><p>Stopp wenn satt!</p></div>
   </div>
 
-  <div class="slabel">☀️ Frühstück – Pause 09:30</div>
-  <div class="vis-card-green">
-    <div class="card-header">
-      <span class="card-icon">🥣</span>
-      <div><div class="card-title">Joghurt- oder Quark-Bowl</div><div class="card-sub">Jeden Tag in der Pause</div></div>
-    </div>
-    <div class="meal-visual">
-      <div class="food-item"><span class="food-emoji">🥛</span><span class="food-name">Joghurt oder Quark</span></div>
-      <div class="food-item"><span class="food-emoji">🌾</span><span class="food-name">Haferflocken drüber</span></div>
-      <div class="food-item"><span class="food-emoji">🍌</span><span class="food-name">Banane, Apfel oder Beeren</span></div>
+  <div class="sl">☀️ Frühstück – Pause 09:30</div>
+  <div class="card-g">
+    <div class="ch"><span class="ci">🥣</span><div><div class="ct">Joghurt- oder Quark-Bowl</div><div class="cs">Jeden Tag in der Pause</div></div></div>
+    <div class="fg">
+      <div class="fi"><span class="fe">🥛</span><span class="fn">Joghurt oder Quark</span></div>
+      <div class="fi"><span class="fe">🌾</span><span class="fn">Haferflocken drüber</span></div>
+      <div class="fi"><span class="fe">🍌</span><span class="fn">Banane, Apfel oder Beeren</span></div>
     </div>
   </div>
 
-  <div class="slabel">🌞 Mittagessen – 12:30</div>
-
-  <div class="vis-card-green">
-    <div class="card-header"><span class="card-icon">✅</span><div><div class="card-title">Immer okay – so viel du willst!</div></div></div>
-    <div class="always-ok">
-      <span class="ok-pill">🥒 Gurke</span>
-      <span class="ok-pill">🥕 Karotten</span>
-      <span class="ok-pill">🫑 Paprika</span>
-      <span class="ok-pill">🍅 Tomaten</span>
-      <span class="ok-pill">🥗 Salat</span>
-      <span class="ok-pill">🍓 Beeren</span>
+  <div class="sl">🌞 Mittagessen – 12:30</div>
+  <div class="card-g">
+    <div class="ch"><span class="ci">✅</span><div><div class="ct">Immer okay – so viel du willst!</div></div></div>
+    <div class="pills">
+      <span class="pill">🥒 Gurke</span><span class="pill">🥕 Karotten</span><span class="pill">🫑 Paprika</span>
+      <span class="pill">🍅 Tomaten</span><span class="pill">🥗 Salat</span><span class="pill">🍓 Beeren</span>
+    </div>
+  </div>
+  <div class="card-a">
+    <div class="ch"><span class="ci">🏫</span><div><div class="ct">Mensa – Mo, Di, Do</div></div></div>
+    <div class="ms">
+      <div class="ms-i"><div class="mn">1</div><span class="me">🥗</span><div class="mt">Zuerst Salatbuffet – Teller voll!</div></div>
+      <div class="ms-i"><div class="mn">2</div><span class="me">🍽️</span><div class="mt">Hauptgericht – nur einmal!</div></div>
+      <div class="ms-i"><div class="mn">3</div><span class="me">⏱️</span><div class="mt">10 Min warten vor Nachschlag</div></div>
+      <div class="ms-i"><div class="mn">4</div><span class="me">🚫</span><div class="mt">Kein Nachtisch</div></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="ch"><span class="ci">🍝</span><div><div class="ct">Zuhause – Pasta</div></div></div>
+    <div class="fg">
+      <div class="fi"><span class="fe">🍝</span><span class="fn">Vollkornnudeln (Faust groß)</span></div>
+      <div class="fi"><span class="fe">🍅</span><span class="fn">Tomatensoße + Gemüse</span></div>
+      <div class="fi"><span class="fe">🥗</span><span class="fn">Großer Salat dazu</span></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="ch"><span class="ci">🍗</span><div><div class="ct">Zuhause – Hähnchen</div></div></div>
+    <div class="fg">
+      <div class="fi"><span class="fe">🍗</span><span class="fn">Gegrilltes Hähnchen</span></div>
+      <div class="fi"><span class="fe">🥒</span><span class="fn">Viel Rohkost</span></div>
+      <div class="fi"><span class="fe">🥔</span><span class="fn">Kartoffeln – kleine Portion</span></div>
     </div>
   </div>
 
-  <div class="vis-card-amber">
-    <div class="card-header"><span class="card-icon">🏫</span><div><div class="card-title">Mensa – Mo, Di, Do</div></div></div>
-    <div class="mensa-steps">
-      <div class="mensa-step"><div class="step-num">1</div><span class="step-emoji">🥗</span><div class="step-text">Zuerst Salatbuffet – Teller voll!</div></div>
-      <div class="mensa-step"><div class="step-num">2</div><span class="step-emoji">🍽️</span><div class="step-text">Hauptgericht – nur einmal!</div></div>
-      <div class="mensa-step"><div class="step-num">3</div><span class="step-emoji">⏱️</span><div class="step-text">10 Min warten vor Nachschlag</div></div>
-      <div class="mensa-step"><div class="step-num">4</div><span class="step-emoji">🚫</span><div class="step-text">Kein Nachtisch</div></div>
+  <div class="sl">🌙 Abendbrot – 18:00</div>
+  <div class="card">
+    <div class="fg">
+      <div class="fi"><span class="fe">🍞</span><span class="fn">2 Scheiben Vollkornbrot</span></div>
+      <div class="fi"><span class="fe">🧀</span><span class="fn">Frischkäse oder Aufschnitt</span></div>
+      <div class="fi"><span class="fe">🥦</span><span class="fn">Rohes Gemüse</span></div>
     </div>
   </div>
-
-  <div class="vis-card">
-    <div class="card-header"><span class="card-icon">🍝</span><div><div class="card-title">Zuhause – Pasta</div></div></div>
-    <div class="meal-visual">
-      <div class="food-item"><span class="food-emoji">🍝</span><span class="food-name">Vollkornnudeln (Faust groß)</span></div>
-      <div class="food-item"><span class="food-emoji">🍅</span><span class="food-name">Tomatensoße + Gemüse</span></div>
-      <div class="food-item"><span class="food-emoji">🥗</span><span class="food-name">Großer Salat dazu</span></div>
-    </div>
-  </div>
-
-  <div class="vis-card">
-    <div class="card-header"><span class="card-icon">🍗</span><div><div class="card-title">Zuhause – Hähnchen</div></div></div>
-    <div class="meal-visual">
-      <div class="food-item"><span class="food-emoji">🍗</span><span class="food-name">Gegrilltes Hähnchen</span></div>
-      <div class="food-item"><span class="food-emoji">🥒</span><span class="food-name">Viel Rohkost</span></div>
-      <div class="food-item"><span class="food-emoji">🥔</span><span class="food-name">Kartoffeln – kleine Portion</span></div>
-    </div>
-  </div>
-
-  <div class="slabel">🌙 Abendbrot – 18:00</div>
-  <div class="vis-card">
-    <div class="meal-visual">
-      <div class="food-item"><span class="food-emoji">🍞</span><span class="food-name">2 Scheiben Vollkornbrot</span></div>
-      <div class="food-item"><span class="food-emoji">🧀</span><span class="food-name">Frischkäse oder Aufschnitt</span></div>
-      <div class="food-item"><span class="food-emoji">🥦</span><span class="food-name">Rohes Gemüse</span></div>
-    </div>
-  </div>
-
-  <div class="vis-card-red" style="margin-top:4px;">
-    <div class="card-header">
-      <span class="card-icon">🚫</span>
-      <div>
-        <div class="card-title">Keine Zwischenmahlzeiten!</div>
-        <div class="card-sub">Hunger? → Rohkost essen! 🥕 Paprika, Karotte, Gurke</div>
-      </div>
-    </div>
+  <div class="card-r">
+    <div class="ch"><span class="ci">🚫</span><div><div class="ct">Keine Zwischenmahlzeiten!</div><div class="cs">Hunger? → Rohkost! 🥕 Paprika, Karotte, Gurke</div></div></div>
   </div>
 </div>
 
 <!-- TRINKEN -->
 <div id="tab-trinken" class="hidden">
-  <div class="slabel">Was darf ich trinken?</div>
-  <div class="drink-visual">
-    <div class="drink-item d-green"><span class="di">💧</span><p>Wasser<br>so viel du willst</p></div>
-    <div class="drink-item d-green"><span class="di">🍵</span><p>Tee (ungesüßt)<br>so oft du magst</p></div>
-    <div class="drink-item d-amber"><span class="di">🍊</span><p>Fruchtsaft<br>max. 1 kleines Glas</p></div>
-    <div class="drink-item d-red"><span class="di">🥤</span><p>Cola, Sprite, Fanta<br>NIE!</p></div>
-    <div class="drink-item d-red"><span class="di">⚡</span><p>Energy Drinks<br>NIE!</p></div>
+  <div class="sl">Was darf ich trinken?</div>
+  <div class="dg" style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+    <div class="di dok"><span class="e">💧</span><p>Wasser<br>so viel du willst</p></div>
+    <div class="di dok"><span class="e">🍵</span><p>Tee (ungesüßt)<br>so oft du magst</p></div>
+    <div class="di dwa"><span class="e">🍊</span><p>Fruchtsaft<br>max. 1 kleines Glas</p></div>
+    <div class="di dno"><span class="e">🥤</span><p>Cola, Sprite, Fanta<br>NIE!</p></div>
+    <div class="di dno" style="grid-column:span 2"><span class="e">⚡</span><p>Energy Drinks – NIE!</p></div>
   </div>
-
-  <div class="vis-card-green" style="margin-top:12px;">
-    <div class="card-header"><span class="card-icon">⏱️</span><div><div class="card-title">Geheimtipp!</div></div></div>
-    <p style="font-size:14px; color:#085041; font-weight:500;">10 Minuten <strong>vor dem Essen</strong> ein großes Glas Wasser trinken → du wirst schneller satt!</p>
+  <div class="card-g" style="margin-top:12px">
+    <div class="ch"><span class="ci">⏱️</span><div><div class="ct">Geheimtipp!</div></div></div>
+    <p style="font-size:14px;color:#085041;font-weight:500">10 Minuten <strong>vor dem Essen</strong> ein großes Glas Wasser trinken → du wirst schneller satt!</p>
   </div>
-
-  <div class="slabel">💧 Wasser-Tracker – heute</div>
-  <div class="vis-card">
-    <p style="font-size:12px; color:#888; margin-bottom:10px; text-align:center;">Tippe auf ein Glas wenn du es getrunken hast · 1 Glas = 250 ml</p>
-    <div class="water-grid" id="water-grid"></div>
-    <div class="progress-row" style="margin-top:12px;">
-      <div class="progress-track"><div class="progress-fill" id="water-bar" style="width:0%"></div></div>
-      <span style="font-size:13px; color:#1D9E75; font-weight:700; min-width:50px;" id="water-label">0 / 8</span>
+  <div class="sl">💧 Wasser-Tracker – heute</div>
+  <div class="card">
+    <p style="font-size:12px;color:#888;margin-bottom:10px;text-align:center">Tippe auf ein Glas · 1 Glas = 250 ml</p>
+    <div class="wg" id="water-grid"></div>
+    <div class="pr" style="margin-top:12px">
+      <div class="pt"><div class="pf" id="water-bar" style="width:0%"></div></div>
+      <span style="font-size:13px;color:#1D9E75;font-weight:700;min-width:50px" id="water-lbl">0 / 8</span>
     </div>
   </div>
 </div>
 
 <!-- SPORT -->
 <div id="tab-sport" class="hidden">
-  <div class="vis-card-green">
-    <div style="text-align:center; padding:6px 0;">
-      <div style="font-size:40px;">🎯</div>
-      <div style="font-size:16px; font-weight:700; color:#085041; margin-top:6px;" id="sport-title">Jeden Tag 20 Minuten!</div>
-      <div style="font-size:13px; color:#0F6E56; margin-top:4px;">Such dir einfach eine Übung aus die dir Spaß macht</div>
+  <div class="card-g">
+    <div style="text-align:center;padding:6px 0">
+      <div style="font-size:40px">🎯</div>
+      <div style="font-size:16px;font-weight:700;color:#085041;margin-top:6px" id="sport-title">Jeden Tag 20 Minuten!</div>
+      <div style="font-size:13px;color:#0F6E56;margin-top:4px">Such dir eine Übung aus die dir Spaß macht</div>
     </div>
   </div>
-
-  <div class="slabel">Gelenk-schonende Übungen</div>
-  <div class="ex-grid">
-    <div class="ex-item"><span class="ei">🚶</span><div class="en">Gehen</div><div class="ed">20 Min · draußen</div><span class="ex-badge">⭐⭐⭐ super</span></div>
-    <div class="ex-item"><span class="ei">🚲</span><div class="en">Rad fahren</div><div class="ed">20 Min · gemütlich</div><span class="ex-badge">⭐⭐⭐ super</span></div>
-    <div class="ex-item"><span class="ei">🏊</span><div class="en">Schwimmen</div><div class="ed">20 Min · beliebig</div><span class="ex-badge">⭐⭐⭐ optimal</span></div>
-    <div class="ex-item"><span class="ei">💪</span><div class="en">Wandstützen</div><div class="ed">3 × 10 Mal</div><span class="ex-badge">⭐⭐ gut</span></div>
-    <div class="ex-item"><span class="ei">🧘</span><div class="en">Dehnen</div><div class="ed">20 Min · Zimmer</div><span class="ex-badge">⭐⭐⭐ optimal</span></div>
-    <div class="ex-item"><span class="ei">🪑</span><div class="en">Stuhl-Aufstehen</div><div class="ed">3 × 10 Mal</div><span class="ex-badge">⭐⭐ gut</span></div>
+  <div class="sl">Gelenk-schonende Übungen</div>
+  <div class="eg">
+    <div class="ei"><span class="e">🚶</span><div class="n">Gehen</div><div class="d">20 Min · draußen</div><span class="eb">⭐⭐⭐ super</span></div>
+    <div class="ei"><span class="e">🚲</span><div class="n">Rad fahren</div><div class="d">20 Min · gemütlich</div><span class="eb">⭐⭐⭐ super</span></div>
+    <div class="ei"><span class="e">🏊</span><div class="n">Schwimmen</div><div class="d">20 Min · beliebig</div><span class="eb">⭐⭐⭐ optimal</span></div>
+    <div class="ei"><span class="e">💪</span><div class="n">Wandstützen</div><div class="d">3 × 10 Mal</div><span class="eb">⭐⭐ gut</span></div>
+    <div class="ei"><span class="e">🧘</span><div class="n">Dehnen</div><div class="d">20 Min · Zimmer</div><span class="eb">⭐⭐⭐ optimal</span></div>
+    <div class="ei"><span class="e">🪑</span><div class="n">Stuhl-Aufstehen</div><div class="d">3 × 10 Mal</div><span class="eb">⭐⭐ gut</span></div>
   </div>
-
-  <div class="vis-card-green" style="margin-top:12px;">
-    <div class="card-header"><span class="card-icon">🚶</span><div><div class="card-title">Alltags-Tipps</div></div></div>
-    <div class="meal-visual" style="margin-top:0;">
-      <div class="food-item"><span class="food-emoji">🪜</span><span class="food-name">Treppe statt Aufzug</span></div>
-      <div class="food-item"><span class="food-emoji">👟</span><span class="food-name">Zu Fuß zur Schule</span></div>
-      <div class="food-item"><span class="food-emoji">🌳</span><span class="food-name">In der Pause draußen</span></div>
+  <div class="card-g" style="margin-top:12px">
+    <div class="ch"><span class="ci">🚶</span><div><div class="ct">Alltags-Tipps</div></div></div>
+    <div class="fg" style="margin-top:0">
+      <div class="fi"><span class="fe">🪜</span><span class="fn">Treppe statt Aufzug</span></div>
+      <div class="fi"><span class="fe">👟</span><span class="fn">Zu Fuß zur Schule</span></div>
+      <div class="fi"><span class="fe">🌳</span><span class="fn">Pause draußen</span></div>
     </div>
   </div>
-
-  <div class="vis-card-red" style="margin-top:4px;">
-    <div class="card-header"><span class="card-icon">❗</span><div><div class="card-title">Schmerz = sofort aufhören!</div><div class="card-sub">Lieber weniger als sich verletzen</div></div></div>
-  </div>
+  <div class="card-r"><div class="ch"><span class="ci">❗</span><div><div class="ct">Schmerz = sofort aufhören!</div><div class="cs">Lieber weniger als verletzen</div></div></div></div>
 </div>
 
-<!-- WOCHENPLAN -->
+<!-- PLAN -->
 <div id="tab-woche" class="hidden">
-  <div class="slabel">Bewegung – jeden Tag!</div>
-  <div class="vis-card">
-    <div class="week-grid">
-      <div class="wday"><div class="wday-name">Mo</div><div class="wday-circle wday-sport">🚶</div><div class="wday-note">Gehen</div></div>
-      <div class="wday"><div class="wday-name">Di</div><div class="wday-circle wday-sport">🚲</div><div class="wday-note">Rad</div></div>
-      <div class="wday"><div class="wday-name">Mi</div><div class="wday-circle wday-sport">💪</div><div class="wday-note">Übungen</div></div>
-      <div class="wday"><div class="wday-name">Do</div><div class="wday-circle wday-sport">🚶</div><div class="wday-note">Gehen</div></div>
-      <div class="wday"><div class="wday-name">Fr</div><div class="wday-circle wday-sport">🧘</div><div class="wday-note">Dehnen</div></div>
-      <div class="wday"><div class="wday-name">Sa</div><div class="wday-circle wday-sport">🏊</div><div class="wday-note">Schwimmen</div></div>
-      <div class="wday"><div class="wday-name">So</div><div class="wday-circle wday-rest">🌳</div><div class="wday-note">Spaziergang</div></div>
+  <div class="sl">Bewegung – jeden Tag!</div>
+  <div class="card">
+    <div class="wk">
+      <div class="wd"><div class="wn">Mo</div><div class="wc ws">🚶</div><div class="wt">Gehen</div></div>
+      <div class="wd"><div class="wn">Di</div><div class="wc ws">🚲</div><div class="wt">Rad</div></div>
+      <div class="wd"><div class="wn">Mi</div><div class="wc ws">💪</div><div class="wt">Übungen</div></div>
+      <div class="wd"><div class="wn">Do</div><div class="wc ws">🚶</div><div class="wt">Gehen</div></div>
+      <div class="wd"><div class="wn">Fr</div><div class="wc ws">🧘</div><div class="wt">Dehnen</div></div>
+      <div class="wd"><div class="wn">Sa</div><div class="wc ws">🏊</div><div class="wt">Schwimmen</div></div>
+      <div class="wd"><div class="wn">So</div><div class="wc wr">🌳</div><div class="wt">Spazier-gang</div></div>
     </div>
-    <p style="font-size:12px; color:#888; text-align:center;">Du kannst tauschen – wichtig ist: <strong>jeden Tag!</strong></p>
+    <p style="font-size:12px;color:#888;text-align:center">Tauschen erlaubt – wichtig ist: <strong>jeden Tag!</strong></p>
   </div>
-
-  <div class="slabel">Tagesablauf</div>
-  <div class="vis-card">
-    <div class="time-plan">
-      <div class="time-item">
-        <div class="time-badge">09:30</div>
-        <span class="time-emoji">🥣</span>
-        <div><div class="time-text">Frühstück – Pause</div><div class="time-sub">Joghurt + Haferflocken + Obst</div></div>
-      </div>
-      <div class="time-item">
-        <div class="time-badge">12:30</div>
-        <span class="time-emoji">🍽️</span>
-        <div><div class="time-text">Mittagessen</div><div class="time-sub">Salat zuerst · kein Nachschlag</div></div>
-      </div>
-      <div class="time-item">
-        <div class="time-badge gray">Pause</div>
-        <span class="time-emoji">🥕</span>
-        <div><div class="time-text">Hunger? → Rohkost!</div><div class="time-sub">Paprika, Karotte, Gurke – so viel du willst</div></div>
-      </div>
-      <div class="time-item">
-        <div class="time-badge">18:00</div>
-        <span class="time-emoji">🌙</span>
-        <div><div class="time-text">Abendbrot</div><div class="time-sub">Brot + Gemüse · kein Süßes danach</div></div>
-      </div>
-      <div class="time-item">
-        <div class="time-badge amber">Täglich</div>
-        <span class="time-emoji">🏃</span>
-        <div><div class="time-text">20 Min Bewegung</div><div class="time-sub">Wann immer es passt</div></div>
-      </div>
+  <div class="sl">Tagesablauf</div>
+  <div class="card">
+    <div class="tp">
+      <div class="ti2"><div class="tb">09:30</div><span class="te2">🥣</span><div><div class="tt">Frühstück – Pause</div><div class="ts">Joghurt + Haferflocken + Obst</div></div></div>
+      <div class="ti2"><div class="tb">12:30</div><span class="te2">🍽️</span><div><div class="tt">Mittagessen</div><div class="ts">Salat zuerst · kein Nachschlag</div></div></div>
+      <div class="ti2"><div class="tb gr">Pause</div><span class="te2">🥕</span><div><div class="tt">Hunger? → Rohkost!</div><div class="ts">Paprika, Karotte, Gurke – unbegrenzt</div></div></div>
+      <div class="ti2"><div class="tb">18:00</div><span class="te2">🌙</span><div><div class="tt">Abendbrot</div><div class="ts">Brot + Gemüse · kein Süßes danach</div></div></div>
+      <div class="ti2"><div class="tb am">Täglich</div><span class="te2">🏃</span><div><div class="tt">20 Min Bewegung</div><div class="ts">Wann immer es passt</div></div></div>
     </div>
   </div>
 </div>
 
 <!-- GEWICHT -->
 <div id="tab-gewicht" class="hidden">
-
-  <!-- Konfetti-Overlay -->
-  <div id="milestone-overlay" class="hidden" style="position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:200;display:flex;align-items:center;justify-content:center;padding:1.5rem;">
-    <div style="background:white;border-radius:20px;padding:2rem 1.5rem;max-width:320px;width:100%;text-align:center;">
-      <div style="font-size:60px;" id="milestone-emoji">🎉</div>
-      <div style="font-size:22px;font-weight:700;margin:10px 0 6px;" id="milestone-title">Super!</div>
-      <div style="font-size:14px;color:#555;line-height:1.6;" id="milestone-text"></div>
-      <button onclick="document.getElementById('milestone-overlay').classList.add('hidden')" style="margin-top:16px;width:100%;background:#1D9E75;color:white;border:none;border-radius:12px;padding:12px;font-size:15px;font-weight:700;cursor:pointer;">Weiter so! 💪</button>
+  <div id="w-setup" class="wsetup">
+    <div style="text-align:center;margin-bottom:12px">
+      <div style="font-size:44px">⚖️</div>
+      <div style="font-size:16px;font-weight:700;margin-top:4px" id="w-setup-title">Mein Ziel eintragen</div>
     </div>
+    <div class="wig">
+      <div class="wig-g"><label>Startgewicht (kg)</label><input type="number" id="w-start-inp" placeholder="z.B. 90" min="30" max="200" step="0.1"></div>
+      <div class="wig-g"><label>Zielgewicht (kg)</label><input type="number" id="w-ziel-inp" placeholder="z.B. 70" min="30" max="200" step="0.1"></div>
+    </div>
+    <button class="sbtn" onclick="saveGoal()">💾 Speichern</button>
   </div>
-
-  <!-- Ziel eintragen (einmalig) -->
-  <div id="weight-setup-section" class="weight-setup">
-    <div style="text-align:center; margin-bottom:12px;">
-      <div style="font-size:44px;">⚖️</div>
-      <div style="font-size:16px; font-weight:700; margin-top:4px;" id="weight-setup-title">Mein Ziel eintragen</div>
+  <div id="w-progress" class="hidden">
+    <div class="ws2">
+      <div class="wst"><div class="wv" id="w-s">–</div><div class="wl">Start</div></div>
+      <div class="wst"><div class="wv" id="w-c">–</div><div class="wl">Aktuell</div></div>
+      <div class="wst"><div class="wv" id="w-z">–</div><div class="wl">Ziel 🎯</div></div>
     </div>
-    <div class="weight-inputs">
-      <div class="winput-group">
-        <label>Startgewicht (kg)</label>
-        <input type="number" id="input-start" placeholder="z.B. 90" min="30" max="200" step="0.1">
-      </div>
-      <div class="winput-group">
-        <label>Zielgewicht (kg)</label>
-        <input type="number" id="input-ziel" placeholder="z.B. 70" min="30" max="200" step="0.1">
-      </div>
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;font-size:11px;color:#888;margin-bottom:4px"><span>Start</span><span>Ziel 🎯</span></div>
+      <div class="wb"><div class="wbf" id="w-bar" style="width:0%"></div></div>
+      <div style="font-size:12px;color:#888;text-align:right;margin-top:3px" id="w-pct">0% geschafft</div>
+      <div class="wm" id="w-mot"></div>
     </div>
-    <button class="save-btn" onclick="saveGoal()">💾 Speichern</button>
-  </div>
-
-  <!-- Fortschritt -->
-  <div id="weight-progress-section" class="hidden">
-    <div class="w-stats">
-      <div class="w-stat"><div class="wval" id="w-start">–</div><div class="wlbl">Start</div></div>
-      <div class="w-stat"><div class="wval" id="w-current">–</div><div class="wlbl">Aktuell</div></div>
-      <div class="w-stat"><div class="wval" id="w-ziel">–</div><div class="wlbl">Ziel 🎯</div></div>
-    </div>
-    <div class="vis-card">
-      <div style="display:flex; justify-content:space-between; font-size:11px; color:#888; margin-bottom:4px;"><span>Start</span><span>Ziel 🎯</span></div>
-      <div class="w-bar-wrap"><div class="w-bar-fill" id="w-bar" style="width:0%"></div></div>
-      <div style="font-size:12px; color:#888; text-align:right; margin-top:3px;" id="w-pct-label">0% geschafft</div>
-      <div class="w-motivate" id="w-motivate"></div>
-    </div>
-
-    <!-- Sonntags: Wiegen! -->
-    <div id="weigh-sunday" class="hidden">
-      <div class="vis-card-green" style="text-align:center; padding:1.4rem 1rem;">
-        <div style="font-size:44px;">⚖️</div>
-        <div style="font-size:17px; font-weight:700; color:#085041; margin:8px 0 4px;" id="weigh-title">Zeit zum Wiegen!</div>
-        <div style="font-size:13px; color:#0F6E56; margin-bottom:14px;">Trag dein heutiges Gewicht ein:</div>
-        <div class="add-w-row" style="justify-content:center;">
-          <input type="number" id="new-weight" placeholder="kg" min="30" max="200" step="0.1">
-          <button class="add-w-btn" onclick="addWeight()">✓</button>
-        </div>
+    <div id="w-sunday" class="hidden">
+      <div class="card-g" style="text-align:center;padding:1.4rem 1rem">
+        <div style="font-size:44px">⚖️</div>
+        <div style="font-size:17px;font-weight:700;color:#085041;margin:8px 0 4px" id="w-sun-title">Zeit zum Wiegen!</div>
+        <div style="font-size:13px;color:#0F6E56;margin-bottom:14px">Trag dein heutiges Gewicht ein:</div>
+        <div class="win"><input type="number" id="w-new" placeholder="kg" min="30" max="200" step="0.1"><button onclick="addWeight()">✓</button></div>
       </div>
     </div>
-
-    <!-- Mo–Sa: nächster Sonntag -->
-    <div id="weigh-wait" class="hidden">
-      <div class="vis-card" style="text-align:center; padding:1.2rem;">
-        <div style="font-size:36px;">📅</div>
-        <div style="font-size:14px; font-weight:600; color:#444; margin-top:8px;" id="weigh-wait-text">Nächste Wägung am Sonntag!</div>
-        <div style="font-size:12px; color:#888; margin-top:4px;">Einmal pro Woche reicht – Vertraue dem Prozess! 💪</div>
+    <div id="w-wait" class="hidden">
+      <div class="card" style="text-align:center;padding:1.2rem">
+        <div style="font-size:36px">📅</div>
+        <div style="font-size:14px;font-weight:600;color:#444;margin-top:8px" id="w-wait-txt"></div>
+        <div style="font-size:12px;color:#888;margin-top:4px">Einmal pro Woche reicht – vertraue dem Prozess! 💪</div>
       </div>
     </div>
-
-    <!-- Verlauf -->
-    <div class="vis-card" style="margin-top:0;">
-      <div style="font-size:13px; font-weight:700; color:#888; margin-bottom:10px;">📋 Wöchentlicher Verlauf</div>
-      <div id="weight-entries"></div>
+    <div class="card">
+      <div style="font-size:13px;font-weight:700;color:#888;margin-bottom:10px">📋 Wöchentlicher Verlauf</div>
+      <div id="w-log"></div>
     </div>
-    <button class="reset-btn" onclick="resetGoal()">Ziel zurücksetzen</button>
+    <button class="rbtn" onclick="resetGoal()">Ziel zurücksetzen</button>
   </div>
 </div>
 
 <!-- HEUTE -->
 <div id="tab-check" class="hidden">
-  <div style="text-align:center; margin-bottom:12px;">
-    <div style="font-size:13px; color:#888;" id="check-date"></div>
-    <div style="font-size:18px; font-weight:700; color:#1D9E75; margin-top:4px;" id="check-name-title"></div>
+  <div style="text-align:center;margin-bottom:12px">
+    <div style="font-size:13px;color:#888" id="check-date"></div>
+    <div style="font-size:18px;font-weight:700;color:#1D9E75;margin-top:4px" id="check-name"></div>
   </div>
-  <div class="vis-card">
-    <div class="check-item" onclick="toggleCheck('c1')">
-      <span class="check-icon">🌅</span>
-      <div class="check-box" id="c1-box"></div>
-      <span class="check-text" id="c1-text">Frühstück gegessen? (09:30)</span>
-    </div>
-    <div class="check-item" onclick="toggleCheck('c2')">
-      <span class="check-icon">⏱️</span>
-      <div class="check-box" id="c2-box"></div>
-      <span class="check-text" id="c2-text">Vor dem Essen Wasser getrunken?</span>
-    </div>
-    <div class="check-item" onclick="toggleCheck('c3')">
-      <span class="check-icon">🌞</span>
-      <div class="check-box" id="c3-box"></div>
-      <span class="check-text" id="c3-text">Mittagessen gegessen? (12:30)</span>
-    </div>
-    <div class="check-item" onclick="toggleCheck('c4')">
-      <span class="check-icon">🥗</span>
-      <div class="check-box" id="c4-box"></div>
-      <span class="check-text" id="c4-text">Salat zuerst & kein Nachschlag?</span>
-    </div>
-    <div class="check-item" onclick="toggleCheck('c5')">
-      <span class="check-icon">🚫</span>
-      <div class="check-box" id="c5-box"></div>
-      <span class="check-text" id="c5-text">Keine Zwischenmahlzeiten?</span>
-    </div>
-    <div class="check-item" onclick="toggleCheck('c6')">
-      <span class="check-icon">🌙</span>
-      <div class="check-box" id="c6-box"></div>
-      <span class="check-text" id="c6-text">Abendbrot gegessen? (18:00)</span>
-    </div>
-    <div class="check-item" onclick="toggleCheck('c7')">
-      <span class="check-icon">💧</span>
-      <div class="check-box" id="c7-box"></div>
-      <span class="check-text" id="c7-text">6+ Gläser Wasser getrunken?</span>
-    </div>
-    <div class="check-item" onclick="toggleCheck('c8')">
-      <span class="check-icon">🏃</span>
-      <div class="check-box" id="c8-box"></div>
-      <span class="check-text" id="c8-text">20 Minuten bewegt?</span>
-    </div>
-    <div class="check-item" onclick="toggleCheck('c9')">
-      <span class="check-icon">🥤</span>
-      <div class="check-box" id="c9-box"></div>
-      <span class="check-text" id="c9-text">Keine Cola oder Energy Drinks?</span>
-    </div>
+  <div class="card">
+    <div class="ck" onclick="tog('c1')"><span class="cie">🌅</span><div class="cb" id="c1b"></div><span class="ctl" id="c1t">Frühstück gegessen? (09:30)</span></div>
+    <div class="ck" onclick="tog('c2')"><span class="cie">⏱️</span><div class="cb" id="c2b"></div><span class="ctl" id="c2t">Vor dem Essen Wasser getrunken?</span></div>
+    <div class="ck" onclick="tog('c3')"><span class="cie">🌞</span><div class="cb" id="c3b"></div><span class="ctl" id="c3t">Mittagessen gegessen? (12:30)</span></div>
+    <div class="ck" onclick="tog('c4')"><span class="cie">🥗</span><div class="cb" id="c4b"></div><span class="ctl" id="c4t">Salat zuerst & kein Nachschlag?</span></div>
+    <div class="ck" onclick="tog('c5')"><span class="cie">🚫</span><div class="cb" id="c5b"></div><span class="ctl" id="c5t">Keine Zwischenmahlzeiten?</span></div>
+    <div class="ck" onclick="tog('c6')"><span class="cie">🌙</span><div class="cb" id="c6b"></div><span class="ctl" id="c6t">Abendbrot gegessen? (18:00)</span></div>
+    <div class="ck" onclick="tog('c7')"><span class="cie">💧</span><div class="cb" id="c7b"></div><span class="ctl" id="c7t">6+ Gläser Wasser getrunken?</span></div>
+    <div class="ck" onclick="tog('c8')"><span class="cie">🏃</span><div class="cb" id="c8b"></div><span class="ctl" id="c8t">20 Minuten bewegt?</span></div>
+    <div class="ck" onclick="tog('c9')"><span class="cie">🥤</span><div class="cb" id="c9b"></div><span class="ctl" id="c9t">Keine Cola oder Energy Drinks?</span></div>
   </div>
   <div id="done-msg" class="done-msg hidden"></div>
-  <button class="reset-btn" onclick="resetDay()">🔄 Tag zurücksetzen</button>
+  <button class="rbtn" onclick="resetDay()">🔄 Tag zurücksetzen</button>
 </div>
 
-</div><!-- /content -->
+</div>
 
 <script>
-  const TODAY = new Date().toISOString().slice(0,10);
-  const DAYS = ['Sonntag','Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag'];
-  const dn = new Date();
-  document.getElementById('check-date').textContent = DAYS[dn.getDay()] + ', ' + dn.getDate() + '.' + (dn.getMonth()+1) + '.' + dn.getFullYear();
+const TODAY = new Date().toISOString().slice(0,10);
+const DN = new Date();
+const DAYS = ['Sonntag','Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag'];
+document.getElementById('check-date').textContent = DAYS[DN.getDay()] + ', ' + DN.getDate() + '.' + (DN.getMonth()+1) + '.' + DN.getFullYear();
 
-  // EmailJS config
-  const EJS_SERVICE = 'service_i41l25q';
-  const EJS_WELCOME = 'template_izi5zov';
-  const EJS_MILESTONE = 'template_955n7ts';
+// EmailJS
+const EJS_SVC = 'service_i41l25q';
+const EJS_WEL = 'template_izi5zov';
+const EJS_MIL = 'template_955n7ts';
+function ejsSend(tpl, params) {
+  try { if(typeof emailjs!=='undefined'){ emailjs.init('5TDXz07ouf-xjZsyG'); emailjs.send(EJS_SVC,tpl,params); } } catch(e){}
+}
 
-  function ejsSend(template, params) {
-    try {
-      if(typeof emailjs !== 'undefined') {
-        emailjs.init('5TDXz07ouf-xjZsyG');
-        emailjs.send(EJS_SERVICE, template, params);
-      }
-    } catch(e) {}
+// MODAL
+document.getElementById('los-btn').addEventListener('click', function() {
+  const name = document.getElementById('inp-name').value.trim();
+  if(!name) {
+    document.getElementById('inp-name').style.borderColor = '#e24b4a';
+    document.getElementById('inp-name').placeholder = 'Bitte Namen eingeben!';
+    return;
   }
+  const email = document.getElementById('inp-email').value.trim();
+  localStorage.setItem('user_name', name);
+  if(email) localStorage.setItem('user_email', email);
+  document.getElementById('modal').classList.add('hidden');
+  applyName(name);
+  if(email) ejsSend(EJS_WEL, {name:name, reply_email:email, start:'folgt', ziel:'folgt', diff:'–'});
+});
 
-  // Name handling
-  function saveName() {
-    const val = document.getElementById('name-input').value.trim();
-    if(!val) {
-      document.getElementById('name-input').style.borderColor='#e24b4a';
-      document.getElementById('name-input').placeholder='Bitte Namen eingeben!';
-      return;
-    }
-    const name = val;
-    const email = document.getElementById('email-input').value.trim();
-    localStorage.setItem('user_name', name);
-    if(email) localStorage.setItem('user_email', email);
-    document.getElementById('modal').classList.add('hidden');
-    applyName(name);
-    // Send welcome mail if email provided
-    if(email) {
-      ejsSend(EJS_WELCOME, {
-        name: name,
-        reply_email: email,
-        start: 'wird noch eingetragen',
-        ziel: 'wird noch eingetragen',
-        diff: '–'
-      });
-    }
-  }
-  function skipModal() {
-    localStorage.setItem('user_name', 'Du');
-    localStorage.setItem('modal_skipped', '1');
-    document.getElementById('modal').classList.add('hidden');
-    applyName('Du');
-  }
+function skipModal() {
+  localStorage.setItem('user_name', 'Du');
+  document.getElementById('modal').classList.add('hidden');
+  applyName('Du');
+}
 
-  function applyName(name) {
-    // Streak bar
-    document.getElementById('name-streak').textContent = name + ' ist ';
-    // Sport title
-    const st = document.getElementById('sport-title');
-    if(st) st.textContent = name + ', jeden Tag 20 Minuten!';
-    // Weight setup title
-    const wt = document.getElementById('weight-setup-title');
-    if(wt) wt.textContent = name + 's Ziel eintragen';
-    // Check title
-    const ct = document.getElementById('check-name-title');
-    if(ct) ct.textContent = 'Wie war dein Tag, ' + name + '? 💪';
-    // Done message
-    const dm = document.getElementById('done-msg');
-    if(dm) dm.innerHTML = '🏆 Alles erledigt, ' + name + '!<br>Du machst das richtig super!';
-  }
+function applyName(name) {
+  document.getElementById('name-streak').textContent = name==='Du' ? '' : name+' ist ';
+  const st = document.getElementById('sport-title');
+  if(st) st.textContent = name==='Du' ? 'Jeden Tag 20 Minuten!' : name+', jeden Tag 20 Minuten!';
+  const wt = document.getElementById('w-setup-title');
+  if(wt) wt.textContent = name==='Du' ? 'Mein Ziel eintragen' : name+'s Ziel eintragen';
+  const ct = document.getElementById('check-name');
+  if(ct) ct.textContent = name==='Du' ? '' : 'Wie war dein Tag, '+name+'? 💪';
+  const dm = document.getElementById('done-msg');
+  if(dm) dm.innerHTML = name==='Du' ? '🏆 Alles erledigt!<br>Du machst das super!' : '🏆 Alles erledigt, '+name+'!<br>Du machst das richtig super!';
+}
 
-  // Check first visit
-  const savedName = localStorage.getItem('user_name');
-  if (savedName) {
-    document.getElementById('modal').classList.add('hidden');
-    applyName(savedName);
-  } else {
-    document.getElementById('done-msg').innerHTML = '🏆 Alles erledigt!<br>Du machst das richtig super!';
-  }
+// Init
+const savedName = localStorage.getItem('user_name');
+if(savedName) { document.getElementById('modal').classList.add('hidden'); applyName(savedName); }
+else { document.getElementById('done-msg').innerHTML = '🏆 Alles erledigt!<br>Du machst das super!'; }
 
-  // Enter key on name input
-  document.getElementById('name-input').addEventListener('keydown', e => { if(e.key === 'Enter') saveName(); });
+// TABS
+function showTab(id, el) {
+  document.querySelectorAll('[id^="tab-"]').forEach(t=>t.classList.add('hidden'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.remove('hidden');
+  el.classList.add('active');
+}
 
-  function showTab(id, el) {
-    document.querySelectorAll('[id^="tab-"]').forEach(t => t.classList.add('hidden'));
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    document.getElementById('tab-' + id).classList.remove('hidden');
-    el.classList.add('active');
-  }
+// WATER
+const wGrid = document.getElementById('water-grid');
+let wd = JSON.parse(localStorage.getItem('water_'+TODAY)||'{}');
+for(let i=0;i<8;i++){
+  const g=document.createElement('div');
+  g.className='gl'+(wd[i]?' on':'');
+  g.innerHTML='<div class="gl-fill"></div><div class="gl-n">'+(i+1)+'</div>';
+  g.onclick=()=>{g.classList.toggle('on');wd[i]=g.classList.contains('on');localStorage.setItem('water_'+TODAY,JSON.stringify(wd));updWater();};
+  wGrid.appendChild(g);
+}
+function updWater(){
+  const c=document.querySelectorAll('.gl.on').length;
+  document.getElementById('water-bar').style.width=Math.round(c/8*100)+'%';
+  document.getElementById('water-lbl').textContent=c+' / 8';
+}
+updWater();
 
-  // Water
-  const wg = document.getElementById('water-grid');
-  let wd = JSON.parse(localStorage.getItem('water_'+TODAY)||'{}');
-  for(let i=0;i<8;i++){
-    const g=document.createElement('div');
-    g.className='glass'+(wd[i]?' filled':'');
-    g.innerHTML='<div class="glass-fill"></div><div class="glass-label">'+(i+1)+'</div>';
-    g.onclick=()=>{g.classList.toggle('filled');wd[i]=g.classList.contains('filled');localStorage.setItem('water_'+TODAY,JSON.stringify(wd));updateWater();};
-    wg.appendChild(g);
-  }
-  function updateWater(){
-    const c=document.querySelectorAll('.glass.filled').length;
-    document.getElementById('water-bar').style.width=Math.round(c/8*100)+'%';
-    document.getElementById('water-label').textContent=c+' / 8';
-  }
-  updateWater();
+// CHECKLIST
+const CKS=['c1','c2','c3','c4','c5','c6','c7','c8','c9'];
+let cd=JSON.parse(localStorage.getItem('check_'+TODAY)||'{}');
+CKS.forEach(id=>{if(cd[id]){document.getElementById(id+'b').classList.add('on');document.getElementById(id+'b').textContent='✓';document.getElementById(id+'t').classList.add('on');}});
+checkDone();
 
-  // Checklist
-  const checks=['c1','c2','c3','c4','c5','c6','c7','c8','c9'];
-  let cd=JSON.parse(localStorage.getItem('check_'+TODAY)||'{}');
-  checks.forEach(id=>{if(cd[id]){document.getElementById(id+'-box').classList.add('done');document.getElementById(id+'-box').textContent='✓';document.getElementById(id+'-text').classList.add('done');}});
+function tog(id){
+  cd[id]=!cd[id];
+  localStorage.setItem('check_'+TODAY,JSON.stringify(cd));
+  const b=document.getElementById(id+'b'),t=document.getElementById(id+'t');
+  b.classList.toggle('on',cd[id]);b.textContent=cd[id]?'✓':'';t.classList.toggle('on',cd[id]);
   checkDone();
+}
+function checkDone(){
+  const all=CKS.every(id=>cd[id]);
+  document.getElementById('done-msg').classList.toggle('hidden',!all);
+  if(all) updStreak();
+}
+function resetDay(){
+  cd={};localStorage.setItem('check_'+TODAY,'{}');
+  CKS.forEach(id=>{const b=document.getElementById(id+'b'),t=document.getElementById(id+'t');b.classList.remove('on');b.textContent='';t.classList.remove('on');});
+  document.getElementById('done-msg').classList.add('hidden');
+}
 
-  function toggleCheck(id){
-    cd[id]=!cd[id];
-    localStorage.setItem('check_'+TODAY,JSON.stringify(cd));
-    const box=document.getElementById(id+'-box');
-    const txt=document.getElementById(id+'-text');
-    box.classList.toggle('done',cd[id]);
-    box.textContent=cd[id]?'✓':'';
-    txt.classList.toggle('done',cd[id]);
-    checkDone();
-  }
-  function checkDone(){
-    const all=checks.every(id=>cd[id]);
-    document.getElementById('done-msg').classList.toggle('hidden',!all);
-    if(all) updateStreak();
-  }
-  function resetDay(){
-    cd={};localStorage.setItem('check_'+TODAY,'{}');
-    checks.forEach(id=>{document.getElementById(id+'-box').classList.remove('done');document.getElementById(id+'-box').textContent='';document.getElementById(id+'-text').classList.remove('done');});
-    document.getElementById('done-msg').classList.add('hidden');
-  }
+// STREAK
+function updStreak(){
+  let s=JSON.parse(localStorage.getItem('streak')||'{"days":[]}');
+  if(!s.days.includes(TODAY)){s.days.push(TODAY);localStorage.setItem('streak',JSON.stringify(s));}
+  document.getElementById('streak-n').textContent=s.days.length;
+}
+const sx=JSON.parse(localStorage.getItem('streak')||'{"days":[]}');
+document.getElementById('streak-n').textContent=sx.days.length;
 
-  // Streak
-  function updateStreak(){
-    let s=JSON.parse(localStorage.getItem('streak')||'{"days":[]}');
-    if(!s.days.includes(TODAY)){s.days.push(TODAY);localStorage.setItem('streak',JSON.stringify(s));}
-    renderStreak();
-  }
-  function renderStreak(){
-    const s=JSON.parse(localStorage.getItem('streak')||'{"days":[]}');
-    document.getElementById('streak-count').textContent=s.days.length;
-  }
-  renderStreak();
+// MILESTONES
+const MLS=[
+  {pct:10,emoji:'🌱',title:'Erste 10% geschafft!',text:'Du hast den ersten Meilenstein erreicht! Dein Körper sagt Danke!',
+   msg:'ich hab gerade gesehen dass du deine ersten 10% erreicht hast – mehr als die meisten überhaupt schaffen!\n\nDer Anfang ist das Schwerste – und den hast du gemacht.',
+   subj:'🌱 {{name}} – du hast die ersten 10% geschafft!'},
+  {pct:25,emoji:'🔥',title:'Ein Viertel geschafft!',text:'25% – das ist richtig stark! Du bist auf dem richtigen Weg!',
+   msg:'ein Viertel deines Ziels liegt bereits hinter dir!\n\nDas ist kein Zufall – das ist deine Disziplin jeden Tag.',
+   subj:'🔥 {{name}} – ein Viertel geschafft!'},
+  {pct:50,emoji:'⭐',title:'Die Hälfte geschafft!',text:'Halbzeit! Du hast die Hälfte deines Ziels erreicht!',
+   msg:'HALBZEIT! Du hast die Hälfte deines Ziels erreicht!\n\nIch bin wirklich stolz auf dich. Weiter so!',
+   subj:'⭐ {{name}} – Halbzeit! Die Hälfte ist geschafft!'},
+  {pct:75,emoji:'🚀',title:'Drei Viertel geschafft!',text:'Unglaublich! Nur noch ein Viertel bis zum Ziel!',
+   msg:'drei Viertel – ich kann es kaum glauben!\n\nDu bist so nah dran. Gib jetzt nicht auf!',
+   subj:'🚀 {{name}} – drei Viertel geschafft!'},
+  {pct:100,emoji:'🏆',title:'ZIEL ERREICHT!',text:'Du hast es wirklich geschafft! Das ist eine unglaubliche Leistung!',
+   msg:'ICH KANN ES NICHT FASSEN – DU HAST ES GESCHAFFT!\n\nDas war kein Glück. Das war jeden Tag aufstehen und weitermachen.\n\nIch bin unglaublich stolz auf dich!',
+   subj:'🏆 {{name}} – DU HAST ES GESCHAFFT!'},
+];
 
-  // Inaktivitäts-Check (10 Tage keine Checkliste abgehakt)
-  function checkInactivity() {
-    const email = localStorage.getItem('user_email');
-    const name = localStorage.getItem('user_name')||'Du';
-    if(!email) return;
-    const lastCheck = localStorage.getItem('last_inactivity_mail');
-    if(lastCheck === TODAY) return; // bereits heute geprüft
-    const streak = JSON.parse(localStorage.getItem('streak')||'{"days":[]}');
-    if(streak.days.length === 0) return;
-    const lastDay = streak.days[streak.days.length-1];
-    const last = new Date(lastDay);
-    const now = new Date(TODAY);
-    const diffDays = Math.round((now-last)/(1000*60*60*24));
-    if(diffDays >= 10) {
-      localStorage.setItem('last_inactivity_mail', TODAY);
-      ejsSend(EJS_MILESTONE, {
-        name: name,
-        reply_email: email,
-        subject: '💪 '+name+', alles okay? Wir vermissen dich!',
-        message: 'du warst seit '+diffDays+' Tagen nicht mehr aktiv.\n\nDas ist völlig normal – jeder hat mal eine schwierige Phase. Aber dein Ziel wartet noch auf dich!\n\nKomm einfach wieder rein, auch ein kleiner Schritt zählt!',
-        milestone: 'Erinnerung nach '+diffDays+' Tagen',
-        start: '', current: '', ziel: '', remaining: ''
-      });
-    }
-  }
-  checkInactivity();
-
-  // Meilensteine
-  const MILESTONES = [
-    {pct:10, emoji:'🌱', title:'Erste 10% geschafft!', text:'Du hast den ersten Meilenstein erreicht! Dein Körper sagt Danke!'},
-    {pct:25, emoji:'🔥', title:'Ein Viertel geschafft!', text:'25% – das ist richtig stark! Du bist auf dem richtigen Weg!'},
-    {pct:50, emoji:'⭐', title:'Die Hälfte geschafft!', text:'Halbzeit! Du hast schon die Hälfte deines Ziels erreicht!'},
-    {pct:75, emoji:'🚀', title:'Drei Viertel geschafft!', text:'Unglaublich! Nur noch ein Viertel bis zum Ziel!'},
-    {pct:100, emoji:'🏆', title:'ZIEL ERREICHT!', text:'Du hast es wirklich geschafft! Das ist eine unglaubliche Leistung!'},
-  ];
-  const MILESTONE_MSGS = {
-    10: {
-      subject: '🌱 '+'{{name}}'+' – du hast die ersten 10% geschafft!',
-      message: 'ich hab gerade gesehen dass du deine ersten 10% erreicht hast – und das ist mehr als die meisten überhaupt schaffen!\n\nDer Anfang ist das Schwerste – und den hast du gemacht. Weiter so!'
-    },
-    25: {
-      subject: '🔥 '+'{{name}}'+' – ein Viertel geschafft!',
-      message: 'ein Viertel deines Ziels liegt bereits hinter dir!\n\nDas ist kein Zufall, das ist deine Arbeit und deine Disziplin jeden Tag. Du bist auf dem richtigen Weg!'
-    },
-    50: {
-      subject: '⭐ '+'{{name}}'+' – Halbzeit! Die Hälfte ist geschafft!',
-      message: 'HALBZEIT! Du hast die Hälfte deines Ziels erreicht!\n\nIch bin wirklich stolz auf dich. Was du hier machst ist nicht selbstverständlich. Weiter so!'
-    },
-    75: {
-      subject: '🚀 '+'{{name}}'+' – drei Viertel geschafft!',
-      message: 'drei Viertel – ich kann es kaum glauben!\n\nDu bist so nah dran. Gib jetzt nicht auf – die letzten Kilometer sind die wichtigsten!'
-    },
-    100: {
-      subject: '🏆 '+'{{name}}'+' – DU HAST ES GESCHAFFT!',
-      message: 'ICH KANN ES NICHT FASSEN – DU HAST ES GESCHAFFT!\n\nDas war kein Glück. Das war jeden Tag aufstehen, jeden Tag Entscheidungen treffen, jeden Tag weitermachen.\n\nIch bin unglaublich stolz auf dich!'
-    }
-  };
-
-  function checkMilestone(pct, prevPct, name) {
-    for(const m of MILESTONES) {
-      if(prevPct < m.pct && pct >= m.pct) {
-        document.getElementById('milestone-emoji').textContent = m.emoji;
-        document.getElementById('milestone-title').textContent = name + ', ' + m.title;
-        document.getElementById('milestone-text').textContent = m.text;
-        document.getElementById('milestone-overlay').classList.remove('hidden');
-        // Send email if user has email
-        const email = localStorage.getItem('user_email');
-        const goal = JSON.parse(localStorage.getItem('weight_goal')||'null');
-        const log = JSON.parse(localStorage.getItem('weight_log')||'[]');
-        const cur = log.length>0?log[log.length-1].kg:goal.start;
-        const remaining = (cur - goal.ziel).toFixed(1);
-        if(email && goal) {
-          const msg = MILESTONE_MSGS[m.pct];
-          ejsSend(EJS_MILESTONE, {
-            name: name,
-            reply_email: email,
-            subject: msg.subject.replace('{{name}}', name),
-            message: msg.message,
-            milestone: m.title,
-            start: goal.start+' kg',
-            current: cur+' kg',
-            ziel: goal.ziel+' kg',
-            remaining: remaining+' kg'
-          });
-        }
-        break;
+function checkMilestone(pct, prev, name) {
+  for(const m of MLS) {
+    if(prev < m.pct && pct >= m.pct) {
+      document.getElementById('ml-emoji').textContent=m.emoji;
+      document.getElementById('ml-title').textContent=name+', '+m.title;
+      document.getElementById('ml-text').textContent=m.text;
+      document.getElementById('ml-ov').classList.remove('hidden');
+      const email=localStorage.getItem('user_email');
+      const goal=JSON.parse(localStorage.getItem('weight_goal')||'null');
+      const log=JSON.parse(localStorage.getItem('weight_log')||'[]');
+      if(email&&goal){
+        const cur=log.length>0?log[log.length-1].kg:goal.start;
+        ejsSend(EJS_MIL,{
+          name:name, reply_email:email,
+          subject:m.subj.replace('{{name}}',name),
+          message:m.msg,
+          milestone:m.title,
+          start:goal.start+' kg', current:cur+' kg',
+          ziel:goal.ziel+' kg', remaining:(cur-goal.ziel).toFixed(1)+' kg'
+        });
       }
+      break;
     }
   }
-  // Gewicht
-  function saveGoal(){
-    const st=parseFloat(document.getElementById('input-start').value);
-    const zi=parseFloat(document.getElementById('input-ziel').value);
-    if(!st||!zi||st<=zi){alert('Bitte gültige Werte eingeben!');return;}
-    localStorage.setItem('weight_goal',JSON.stringify({start:st,ziel:zi}));
-    localStorage.setItem('weight_log',JSON.stringify([{date:TODAY,kg:st}]));
-    renderWeight();
+}
+
+// WEIGHT
+function saveGoal(){
+  const st=parseFloat(document.getElementById('w-start-inp').value);
+  const zi=parseFloat(document.getElementById('w-ziel-inp').value);
+  if(!st||!zi||st<=zi){alert('Bitte gültige Werte! Startgewicht muss größer sein.');return;}
+  localStorage.setItem('weight_goal',JSON.stringify({start:st,ziel:zi}));
+  localStorage.setItem('weight_log',JSON.stringify([{date:TODAY,kg:st}]));
+  renderWeight();
+}
+function addWeight(){
+  const v=parseFloat(document.getElementById('w-new').value);
+  if(!v)return;
+  const goal=JSON.parse(localStorage.getItem('weight_goal')||'null');
+  const log=JSON.parse(localStorage.getItem('weight_log')||'[]');
+  const prevCur=log.length>0?log[log.length-1].kg:goal.start;
+  const total=goal.start-goal.ziel;
+  const prevPct=Math.min(100,Math.max(0,Math.round((goal.start-prevCur)/total*100)));
+  const idx=log.findIndex(e=>e.date===TODAY);
+  if(idx>=0)log[idx].kg=v; else log.push({date:TODAY,kg:v});
+  localStorage.setItem('weight_log',JSON.stringify(log));
+  document.getElementById('w-new').value='';
+  const newPct=Math.min(100,Math.max(0,Math.round((goal.start-v)/total*100)));
+  checkMilestone(newPct,prevPct,localStorage.getItem('user_name')||'Du');
+  renderWeight();
+}
+function resetGoal(){
+  if(confirm('Ziel und alle Einträge löschen?')){
+    localStorage.removeItem('weight_goal');localStorage.removeItem('weight_log');renderWeight();
   }
-  function addWeight(){
-    const v=parseFloat(document.getElementById('new-weight').value);
-    if(!v)return;
-    const goal=JSON.parse(localStorage.getItem('weight_goal')||'null');
-    const log=JSON.parse(localStorage.getItem('weight_log')||'[]');
-    const prevCur=log.length>0?log[log.length-1].kg:goal.start;
-    const total=goal.start-goal.ziel;
-    const prevPct=Math.min(100,Math.max(0,Math.round((goal.start-prevCur)/total*100)));
-    const idx=log.findIndex(e=>e.date===TODAY);
-    if(idx>=0)log[idx].kg=v; else log.push({date:TODAY,kg:v});
-    localStorage.setItem('weight_log',JSON.stringify(log));
-    document.getElementById('new-weight').value='';
-    const newPct=Math.min(100,Math.max(0,Math.round((goal.start-v)/total*100)));
-    const name=localStorage.getItem('user_name')||'Du';
-    checkMilestone(newPct, prevPct, name);
-    renderWeight();
+}
+function renderWeight(){
+  const goal=JSON.parse(localStorage.getItem('weight_goal')||'null');
+  const log=JSON.parse(localStorage.getItem('weight_log')||'[]');
+  const name=localStorage.getItem('user_name')||'Du';
+  const isSun=DN.getDay()===0;
+  if(!goal){
+    document.getElementById('w-setup').classList.remove('hidden');
+    document.getElementById('w-progress').classList.add('hidden');
+    return;
   }
-  function resetGoal(){
-    if(confirm('Ziel und alle Einträge löschen?')){localStorage.removeItem('weight_goal');localStorage.removeItem('weight_log');renderWeight();}}
-  function renderWeight(){
-    const goal=JSON.parse(localStorage.getItem('weight_goal')||'null');
-    const log=JSON.parse(localStorage.getItem('weight_log')||'[]');
-    const name=localStorage.getItem('user_name')||'Du';
-    const isSunday=dn.getDay()===0;
-    if(!goal){document.getElementById('weight-setup-section').classList.remove('hidden');document.getElementById('weight-progress-section').classList.add('hidden');return;}
-    document.getElementById('weight-setup-section').classList.add('hidden');
-    document.getElementById('weight-progress-section').classList.remove('hidden');
-    const cur=log.length>0?log[log.length-1].kg:goal.start;
-    const total=goal.start-goal.ziel;
-    const lost=goal.start-cur;
-    const pct=Math.min(100,Math.max(0,Math.round(lost/total*100)));
-    document.getElementById('w-start').textContent=goal.start+' kg';
-    document.getElementById('w-current').textContent=cur+' kg';
-    document.getElementById('w-ziel').textContent=goal.ziel+' kg';
-    document.getElementById('w-bar').style.width=pct+'%';
-    document.getElementById('w-pct-label').textContent=pct+'% geschafft';
-    const rem=(cur-goal.ziel).toFixed(1);
-    const msgs=[
-      '💪 '+name+', du startest jetzt – jeder Tag zählt!',
-      '🚀 Super '+name+'! Noch '+rem+' kg bis zum Ziel!',
-      '🔥 '+name+', du bist auf dem richtigen Weg!',
-      '⭐ '+name+', mehr als die Hälfte – weiter so!',
-      '🏁 Fast geschafft, '+name+'! Nur noch '+rem+' kg!',
-      '🏆 ZIEL ERREICHT, '+name+'! Unglaublich!'
-    ];
-    document.getElementById('w-motivate').textContent=msgs[Math.min(5,Math.floor(pct/20))];
-    const alreadyToday=log.some(e=>e.date===TODAY);
-    if(isSunday && !alreadyToday){
-      document.getElementById('weigh-sunday').classList.remove('hidden');
-      document.getElementById('weigh-wait').classList.add('hidden');
-      const wt=document.getElementById('weigh-title');
-      if(wt) wt.textContent='Zeit zum Wiegen, '+name+'! 💪';
-    } else if(isSunday && alreadyToday){
-      document.getElementById('weigh-sunday').classList.add('hidden');
-      document.getElementById('weigh-wait').classList.remove('hidden');
-      document.getElementById('weigh-wait-text').textContent='✅ Heute schon gewogen – super, '+name+'!';
-    } else {
-      document.getElementById('weigh-sunday').classList.add('hidden');
-      document.getElementById('weigh-wait').classList.remove('hidden');
-      const daysUntil=(7-dn.getDay())%7||7;
-      document.getElementById('weigh-wait-text').textContent='Nächste Wägung in '+daysUntil+' Tag'+(daysUntil===1?'':'en')+' (Sonntag)!';
-    }
-    const container=document.getElementById('weight-entries');
-    container.innerHTML='';
-    [...log].reverse().slice(0,10).forEach((e,i,arr)=>{
-      const prev=arr[i+1];
-      let diff='';
-      if(prev){const d=(e.kg-prev.kg).toFixed(1);diff=d<0?'<span class="wle-diff-good">▼ '+Math.abs(d)+' kg</span>':d>0?'<span class="wle-diff-bad">▲ '+d+' kg</span>':'';}
-      const p=e.date.split('-');
-      container.innerHTML+='<div class="w-log-entry"><span class="wle-date">'+p[2]+'.'+p[1]+'.'+p[0]+'</span><span class="wle-kg">'+e.kg+' kg</span>'+diff+'</div>';
+  document.getElementById('w-setup').classList.add('hidden');
+  document.getElementById('w-progress').classList.remove('hidden');
+  const cur=log.length>0?log[log.length-1].kg:goal.start;
+  const total=goal.start-goal.ziel;
+  const pct=Math.min(100,Math.max(0,Math.round((goal.start-cur)/total*100)));
+  const rem=(cur-goal.ziel).toFixed(1);
+  document.getElementById('w-s').textContent=goal.start+' kg';
+  document.getElementById('w-c').textContent=cur+' kg';
+  document.getElementById('w-z').textContent=goal.ziel+' kg';
+  document.getElementById('w-bar').style.width=pct+'%';
+  document.getElementById('w-pct').textContent=pct+'% geschafft';
+  const msgs=['💪 '+name+', du startest jetzt!','🚀 Super '+name+'! Noch '+rem+' kg!','🔥 Du bist auf dem richtigen Weg!','⭐ Mehr als die Hälfte – weiter so!','🏁 Fast da, '+name+'! Noch '+rem+' kg!','🏆 ZIEL ERREICHT, '+name+'!'];
+  document.getElementById('w-mot').textContent=msgs[Math.min(5,Math.floor(pct/20))];
+  const alreadyToday=log.some(e=>e.date===TODAY);
+  if(isSun&&!alreadyToday){
+    document.getElementById('w-sunday').classList.remove('hidden');
+    document.getElementById('w-wait').classList.add('hidden');
+    const wt=document.getElementById('w-sun-title');
+    if(wt) wt.textContent='Zeit zum Wiegen, '+name+'! 💪';
+  } else if(isSun&&alreadyToday){
+    document.getElementById('w-sunday').classList.add('hidden');
+    document.getElementById('w-wait').classList.remove('hidden');
+    document.getElementById('w-wait-txt').textContent='✅ Heute schon gewogen – super, '+name+'!';
+  } else {
+    document.getElementById('w-sunday').classList.add('hidden');
+    document.getElementById('w-wait').classList.remove('hidden');
+    const d=(7-DN.getDay())%7||7;
+    document.getElementById('w-wait-txt').textContent='Nächste Wägung in '+d+' Tag'+(d===1?'':'en')+' (Sonntag)!';
+  }
+  const cont=document.getElementById('w-log');
+  cont.innerHTML='';
+  [...log].reverse().slice(0,10).forEach((e,i,arr)=>{
+    const prev=arr[i+1];
+    let diff='';
+    if(prev){const d=(e.kg-prev.kg).toFixed(1);diff=d<0?'<span class="wlg">▼ '+Math.abs(d)+' kg</span>':d>0?'<span class="wlb">▲ '+d+' kg</span>':'';}
+    const p=e.date.split('-');
+    cont.innerHTML+='<div class="wle"><span class="wld">'+p[2]+'.'+p[1]+'.'+p[0]+'</span><span class="wlk">'+e.kg+' kg</span>'+diff+'</div>';
+  });
+}
+renderWeight();
+
+// INACTIVITY CHECK
+function checkInactivity(){
+  const email=localStorage.getItem('user_email');
+  const name=localStorage.getItem('user_name')||'Du';
+  if(!email) return;
+  if(localStorage.getItem('last_inact')===TODAY) return;
+  const s=JSON.parse(localStorage.getItem('streak')||'{"days":[]}');
+  if(!s.days.length) return;
+  const last=new Date(s.days[s.days.length-1]);
+  const diff=Math.round((new Date(TODAY)-last)/(1000*60*60*24));
+  if(diff>=10){
+    localStorage.setItem('last_inact',TODAY);
+    ejsSend(EJS_MIL,{
+      name:name, reply_email:email,
+      subject:'💪 '+name+', alles okay? Wir vermissen dich!',
+      message:'du warst seit '+diff+' Tagen nicht mehr aktiv.\n\nDas ist völlig normal – jeder hat mal eine schwierige Phase. Aber dein Ziel wartet noch auf dich!\n\nKomm einfach wieder rein, auch ein kleiner Schritt zählt!',
+      milestone:'Erinnerung nach '+diff+' Tagen',
+      start:'', current:'', ziel:'', remaining:''
     });
   }
-  renderWeight();
-  }
-  function addWeight(){
-    const v=parseFloat(document.getElementById('new-weight').value);
-    if(!v)return;
-    const log=JSON.parse(localStorage.getItem('weight_log')||'[]');
-    const idx=log.findIndex(e=>e.date===TODAY);
-    if(idx>=0)log[idx].kg=v; else log.push({date:TODAY,kg:v});
-    localStorage.setItem('weight_log',JSON.stringify(log));
-    document.getElementById('new-weight').value='';
-    renderWeight();
-  }
-  function resetGoal(){
-    if(confirm('Ziel und alle Einträge löschen?')){localStorage.removeItem('weight_goal');localStorage.removeItem('weight_log');renderWeight();}}
-  function renderWeight(){
-    const goal=JSON.parse(localStorage.getItem('weight_goal')||'null');
-    const log=JSON.parse(localStorage.getItem('weight_log')||'[]');
-    const name=localStorage.getItem('user_name')||'Du';
-    if(!goal){document.getElementById('weight-setup-section').classList.remove('hidden');document.getElementById('weight-progress-section').classList.add('hidden');return;}
-    document.getElementById('weight-setup-section').classList.add('hidden');
-    document.getElementById('weight-progress-section').classList.remove('hidden');
-    const cur=log.length>0?log[log.length-1].kg:goal.start;
-    const total=goal.start-goal.ziel;
-    const lost=goal.start-cur;
-    const pct=Math.min(100,Math.max(0,Math.round(lost/total*100)));
-    document.getElementById('w-start').textContent=goal.start+' kg';
-    document.getElementById('w-current').textContent=cur+' kg';
-    document.getElementById('w-ziel').textContent=goal.ziel+' kg';
-    document.getElementById('w-bar').style.width=pct+'%';
-    document.getElementById('w-pct-label').textContent=pct+'% geschafft';
-    const rem=(cur-goal.ziel).toFixed(1);
-    const msgs=[
-      '💪 '+name+', du startest jetzt – jeder Tag zählt!',
-      '🚀 Super '+name+'! Noch '+rem+' kg bis zum Ziel!',
-      '🔥 '+name+', du bist auf dem richtigen Weg!',
-      '⭐ '+name+', mehr als die Hälfte – weiter so!',
-      '🏁 Fast geschafft, '+name+'! Nur noch '+rem+' kg!',
-      '🏆 ZIEL ERREICHT, '+name+'! Unglaublich!'
-    ];
-    document.getElementById('w-motivate').textContent=msgs[Math.min(5,Math.floor(pct/20))];
-    const container=document.getElementById('weight-entries');
-    container.innerHTML='';
-    [...log].reverse().slice(0,8).forEach((e,i,arr)=>{
-      const prev=arr[i+1];
-      let diff='';
-      if(prev){const d=(e.kg-prev.kg).toFixed(1);diff=d<0?'<span class="wle-diff-good">▼ '+Math.abs(d)+' kg</span>':d>0?'<span class="wle-diff-bad">▲ '+d+' kg</span>':'';}
-      const p=e.date.split('-');
-      container.innerHTML+='<div class="w-log-entry"><span class="wle-date">'+p[2]+'.'+p[1]+'.'+p[0]+'</span><span class="wle-kg">'+e.kg+' kg</span>'+diff+'</div>';
-    });
-  }
-  renderWeight();
+}
+checkInactivity();
 </script>
-<script>if('serviceWorker' in navigator){window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js');});}</script>
+<script>if('serviceWorker' in navigator){window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{});});}</script>
 </body>
 </html>
