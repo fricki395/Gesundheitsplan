@@ -145,17 +145,41 @@
   <div class="tip">💡 Kein Brot morgens – Joghurt und Quark machen länger satt und liefern viel Eiweiß. Das hilft beim Abnehmen!</div>
 
   <div class="section-label">🌞 Mittagessen – 12:30 Uhr</div>
+
+  <div class="card" style="background:#f5fdf9; border-color:#c8ead9;">
+    <div class="card-title">✅ Immer erlaubt – so viel du willst!</div>
+    <ul>
+      <li>Rohes Gemüse: Gurke, Karotten, Paprika, Tomaten, Radieschen</li>
+      <li>Salat (ohne viel Dressing)</li>
+      <li>Beeren: Erdbeeren, Heidelbeeren</li>
+      <li>1 Glas Wasser – <strong>10 Min vor dem Essen trinken!</strong></li>
+    </ul>
+  </div>
+
+  <div class="tip" style="margin-bottom:12px;">💧 <strong>Trick:</strong> 10 Minuten vor dem Essen ein großes Glas Wasser trinken – das füllt den Magen vor und du wirst schneller satt!</div>
+
+  <div class="card" style="border-left: 3px solid #1D9E75; border-radius: 0 12px 12px 0;">
+    <div class="card-title">🏫 Mensa-Regeln (Mo, Di, Do)</div>
+    <ul>
+      <li>Zuerst zum <strong>Salatbuffet</strong> – Teller voll machen</li>
+      <li>Salat komplett essen, dann erst Hauptgericht</li>
+      <li>Hauptgang <strong>einmal</strong> – kein Nachholen!</li>
+      <li>10 Minuten warten bevor du nachgehst – Hunger geht meist weg</li>
+      <li>Kein Nachtisch</li>
+    </ul>
+  </div>
+
   <div class="card">
-    <div class="card-title">🍝 Pasta-Tag</div>
-    <ul><li>Vollkornnudeln (1 Portion = Faust groß)</li><li>Tomatensoße mit Gemüse</li><li>Geriebener Käse drüber</li></ul>
+    <div class="card-title">🍝 Zuhause – Pasta-Tag</div>
+    <ul><li>Vollkornnudeln (nur Faust-groß!)</li><li>Tomatensoße mit viel Gemüse</li><li>Großer Salat dazu</li></ul>
   </div>
   <div class="card">
-    <div class="card-title">🍗 Hähnchen-Tag</div>
-    <ul><li>Gegrilltes Hähnchen (handtellergroß)</li><li>Reis oder Kartoffeln (Faust groß)</li><li>Gurke oder Karotten dazu</li></ul>
+    <div class="card-title">🍗 Zuhause – Hähnchen-Tag</div>
+    <ul><li>Gegrilltes Hähnchen (handtellergroß)</li><li>Viel Rohkost oder Salat</li><li>Kartoffeln nur kleine Portion</li></ul>
   </div>
   <div class="card">
-    <div class="card-title">🥣 Suppen-Tag</div>
-    <ul><li>Linsen- oder Gemüsesuppe (1 Teller)</li><li>1 Scheibe Vollkornbrot dazu</li><li>Naturjoghurt als Nachtisch</li></ul>
+    <div class="card-title">🥣 Zuhause – Suppen-Tag</div>
+    <ul><li>Linsen- oder Gemüsesuppe (1 Teller)</li><li>1 Scheibe Vollkornbrot dazu</li><li>Kein Nachtisch</li></ul>
   </div>
 
   <div class="section-label">🌙 Abendbrot – 18:00 Uhr</div>
@@ -192,6 +216,8 @@
   </div>
 
   <div class="tip" style="margin-top: 1rem;">🍋 <strong>Tipp:</strong> Wasser schmeckt langweilig? Eine Zitronenscheibe, Minzblätter oder gefrorene Beeren rein – sieht cool aus und schmeckt besser! Cola und Energy Drinks haben so viel Zucker, dass eine Dose schon fast den halben Tagesbedarf deckt – davon wirst du müder, nicht fitter.</div>
+
+  <div class="tip" style="margin-top: 8px;">⏱️ <strong>Geheimtipp:</strong> Immer <strong>10 Minuten vor dem Essen</strong> ein großes Glas Wasser trinken. Dein Magen denkt er ist schon halb voll – du isst automatisch weniger!</div>
 
   <div class="section-label">Wann am besten trinken?</div>
   <div class="card">
@@ -407,6 +433,10 @@
       <div class="check-box" id="c5-box"></div>
       <span class="check-text" id="c5-text">💧 Mindestens 6 Gläser Wasser getrunken?</span>
     </div>
+    <div class="check-item" onclick="toggleCheck('c8')">
+      <div class="check-box" id="c8-box"></div>
+      <span class="check-text" id="c8-text">⏱️ Vor jeder Mahlzeit ein Glas Wasser getrunken?</span>
+    </div>
     <div class="check-item" onclick="toggleCheck('c6')">
       <div class="check-box" id="c6-box"></div>
       <span class="check-text" id="c6-text">🏃 20 Minuten bewegt?</span>
@@ -466,7 +496,7 @@
   updateWater();
 
   // Checklist
-  const checks = ['c1','c2','c3','c4','c5','c6','c7'];
+  const checks = ['c1','c2','c3','c4','c5','c8','c6','c7'];
   let checkData = JSON.parse(localStorage.getItem('check_' + TODAY) || '{}');
   checks.forEach(id => {
     if (checkData[id]) {
