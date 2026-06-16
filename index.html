@@ -14,8 +14,20 @@
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f0f4f0; color: #1a1a1a; min-height: 100vh; }
 
+/* Welcome Modal */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 100; display: flex; align-items: center; justify-content: center; padding: 1.5rem; }
+.modal { background: white; border-radius: 20px; padding: 1.8rem 1.5rem; max-width: 360px; width: 100%; text-align: center; }
+.modal-emoji { font-size: 52px; margin-bottom: 10px; }
+.modal h2 { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
+.modal p { font-size: 13px; color: #555; line-height: 1.6; margin-bottom: 14px; }
+.modal-privacy { background: #f5fdf9; border-radius: 10px; padding: 10px 12px; font-size: 12px; color: #085041; margin-bottom: 16px; text-align: left; line-height: 1.6; }
+.modal-privacy strong { display: block; margin-bottom: 3px; font-size: 13px; }
+.modal input[type=text] { width: 100%; padding: 12px; border: 2px solid #e0e0da; border-radius: 12px; font-size: 20px; text-align: center; font-weight: 700; margin-bottom: 12px; color: #1D9E75; }
+.modal input[type=text]:focus { border-color: #1D9E75; outline: none; }
+.modal-btn { width: 100%; background: #1D9E75; color: white; border: none; border-radius: 12px; padding: 14px; font-size: 16px; font-weight: 700; cursor: pointer; }
+
 header { background: linear-gradient(135deg, #1D9E75, #0F6E56); color: white; padding: 1rem 1rem 0.8rem; text-align: center; }
-header h1 { font-size: 20px; font-weight: 700; letter-spacing: -0.3px; }
+header h1 { font-size: 20px; font-weight: 700; }
 .streak-bar { background: #0a5240; padding: 8px; text-align: center; font-size: 13px; color: #9FE1CB; }
 .streak-bar strong { color: white; font-size: 15px; }
 
@@ -26,7 +38,6 @@ header h1 { font-size: 20px; font-weight: 700; letter-spacing: -0.3px; }
 
 .content { max-width: 500px; margin: 0 auto; padding: 1rem 0.9rem 4rem; }
 
-/* Big visual cards */
 .vis-card { background: white; border-radius: 16px; padding: 1rem; margin-bottom: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.07); }
 .vis-card-green { background: linear-gradient(135deg, #E1F5EE, #c8ead9); border-radius: 16px; padding: 1rem; margin-bottom: 12px; }
 .vis-card-amber { background: linear-gradient(135deg, #FAEEDA, #f5d9a0); border-radius: 16px; padding: 1rem; margin-bottom: 12px; }
@@ -37,22 +48,18 @@ header h1 { font-size: 20px; font-weight: 700; letter-spacing: -0.3px; }
 .card-title { font-size: 15px; font-weight: 600; color: #1a1a1a; }
 .card-sub { font-size: 12px; color: #666; margin-top: 1px; }
 
-/* Meal visual grid */
 .meal-visual { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 8px; }
 .food-item { text-align: center; background: white; border-radius: 12px; padding: 10px 6px; }
 .food-emoji { font-size: 30px; display: block; margin-bottom: 4px; }
 .food-name { font-size: 11px; color: #444; line-height: 1.3; }
 
-/* Rules grid */
 .rules-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
 .rule-item { background: white; border-radius: 14px; padding: 14px 10px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
 .rule-item .ri { font-size: 32px; margin-bottom: 6px; display: block; }
 .rule-item p { font-size: 12px; color: #333; line-height: 1.4; font-weight: 500; }
 
-/* Section label */
 .slabel { font-size: 11px; font-weight: 700; color: #1D9E75; text-transform: uppercase; letter-spacing: 0.8px; margin: 1.2rem 0 0.6rem; }
 
-/* Drink items */
 .drink-visual { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .drink-item { border-radius: 14px; padding: 14px 12px; text-align: center; }
 .drink-item .di { font-size: 32px; display: block; margin-bottom: 6px; }
@@ -61,7 +68,6 @@ header h1 { font-size: 20px; font-weight: 700; letter-spacing: -0.3px; }
 .d-amber { background: #FAEEDA; color: #633806; }
 .d-red { background: #FCEBEB; color: #7a1f1f; }
 
-/* Water tracker */
 .water-grid { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0; justify-content: center; }
 .glass { width: 38px; height: 48px; border: 2.5px solid #1D9E75; border-radius: 5px 5px 9px 9px; cursor: pointer; background: transparent; position: relative; overflow: hidden; }
 .glass-fill { position: absolute; bottom: 0; left: 0; right: 0; height: 75%; background: #1D9E75; border-radius: 0 0 6px 6px; opacity: 0; transition: opacity 0.2s; }
@@ -72,7 +78,6 @@ header h1 { font-size: 20px; font-weight: 700; letter-spacing: -0.3px; }
 .progress-track { flex: 1; height: 8px; background: #e0e0da; border-radius: 99px; overflow: hidden; }
 .progress-fill { height: 100%; background: linear-gradient(90deg,#1D9E75,#5DCAA5); border-radius: 99px; transition: width 0.3s; }
 
-/* Exercise cards */
 .ex-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .ex-item { background: white; border-radius: 16px; padding: 14px 12px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
 .ex-item .ei { font-size: 36px; display: block; margin-bottom: 6px; }
@@ -80,7 +85,6 @@ header h1 { font-size: 20px; font-weight: 700; letter-spacing: -0.3px; }
 .ex-item .ed { font-size: 11px; color: #888; margin-bottom: 6px; }
 .ex-badge { display: inline-block; background: #E1F5EE; color: #085041; font-size: 10px; font-weight: 600; padding: 3px 8px; border-radius: 99px; }
 
-/* Week plan */
 .week-grid { display: grid; grid-template-columns: repeat(7,1fr); gap: 4px; margin-bottom: 1rem; }
 .wday { text-align: center; }
 .wday-name { font-size: 10px; color: #888; margin-bottom: 4px; font-weight: 600; }
@@ -89,7 +93,6 @@ header h1 { font-size: 20px; font-weight: 700; letter-spacing: -0.3px; }
 .wday-rest { background: #f0f0ea; }
 .wday-note { font-size: 9px; color: #888; line-height: 1.3; }
 
-/* Time plan */
 .time-plan { display: flex; flex-direction: column; gap: 0; }
 .time-item { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid #f0f0ea; }
 .time-item:last-child { border-bottom: none; }
@@ -100,30 +103,26 @@ header h1 { font-size: 20px; font-weight: 700; letter-spacing: -0.3px; }
 .time-text { font-size: 13px; font-weight: 500; }
 .time-sub { font-size: 11px; color: #888; }
 
-/* Checklist */
 .check-item { display: flex; align-items: center; gap: 12px; padding: 13px 0; border-bottom: 0.5px solid #f0f0ea; cursor: pointer; }
 .check-item:last-child { border-bottom: none; }
 .check-box { width: 26px; height: 26px; border-radius: 8px; border: 2.5px solid #ccc; flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all 0.15s; font-size: 14px; }
 .check-box.done { background: #1D9E75; border-color: #1D9E75; color: white; }
-.check-text { font-size: 14px; color: #1a1a1a; }
+.check-text { font-size: 14px; color: #1a1a1a; flex: 1; }
 .check-text.done { text-decoration: line-through; color: #bbb; }
 .check-icon { font-size: 20px; flex-shrink: 0; }
 
-/* Mensa card */
 .mensa-steps { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
 .mensa-step { display: flex; align-items: center; gap: 10px; background: white; border-radius: 12px; padding: 10px 12px; }
 .step-num { width: 26px; height: 26px; border-radius: 50%; background: #1D9E75; color: white; font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 .step-text { font-size: 13px; color: #1a1a1a; font-weight: 500; }
 .step-emoji { font-size: 20px; flex-shrink: 0; }
 
-/* Always-ok food */
 .always-ok { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
 .ok-pill { background: white; border-radius: 99px; padding: 8px 14px; font-size: 13px; display: flex; align-items: center; gap: 6px; font-weight: 500; }
 
-/* Gewicht */
 .weight-setup { background: white; border-radius: 16px; padding: 1.25rem; margin-bottom: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.07); }
-.weight-inputs { display: flex; gap: 10px; margin: 12px 0; flex-wrap: wrap; }
-.winput-group { flex: 1; min-width: 100px; }
+.weight-inputs { display: flex; gap: 10px; margin: 12px 0; }
+.winput-group { flex: 1; }
 .winput-group label { font-size: 11px; color: #888; display: block; margin-bottom: 4px; font-weight: 600; }
 .winput-group input { width: 100%; padding: 10px; border: 2px solid #e0e0da; border-radius: 10px; font-size: 18px; text-align: center; font-weight: 700; color: #1D9E75; }
 .winput-group input:focus { border-color: #1D9E75; outline: none; }
@@ -134,9 +133,8 @@ header h1 { font-size: 20px; font-weight: 700; letter-spacing: -0.3px; }
 .w-stat .wval { font-size: 22px; font-weight: 700; color: #1D9E75; }
 .w-stat .wlbl { font-size: 10px; color: #888; margin-top: 2px; font-weight: 600; text-transform: uppercase; }
 .w-bar-wrap { height: 14px; background: #e0e0da; border-radius: 99px; overflow: hidden; margin-bottom: 4px; }
-.w-bar-fill { height: 100%; background: linear-gradient(90deg,#1D9E75,#5DCAA5); border-radius: 99px; transition: width 0.6s; position: relative; }
+.w-bar-fill { height: 100%; background: linear-gradient(90deg,#1D9E75,#5DCAA5); border-radius: 99px; transition: width 0.6s; }
 .w-motivate { font-size: 14px; color: #085041; font-weight: 500; text-align: center; padding: 10px; background: #E1F5EE; border-radius: 10px; margin: 10px 0; }
-
 .w-log-entry { display: flex; justify-content: space-between; align-items: center; padding: 9px 0; border-bottom: 0.5px solid #f0f0ea; }
 .w-log-entry:last-child { border-bottom: none; }
 .wle-date { font-size: 12px; color: #888; }
@@ -149,18 +147,32 @@ header h1 { font-size: 20px; font-weight: 700; letter-spacing: -0.3px; }
 .add-w-btn { background: #1D9E75; color: white; border: none; border-radius: 10px; padding: 10px 16px; font-size: 22px; cursor: pointer; font-weight: 700; }
 
 .reset-btn { background: none; border: 1px solid #ddd; border-radius: 8px; padding: 8px 14px; font-size: 12px; color: #aaa; cursor: pointer; width: 100%; margin-top: 8px; }
-
 .done-msg { background: linear-gradient(135deg,#1D9E75,#0F6E56); color: white; border-radius: 16px; padding: 1.2rem; text-align: center; font-size: 16px; font-weight: 600; margin: 10px 0; }
-
+.name-highlight { color: #1D9E75; font-weight: 700; }
 .hidden { display: none !important; }
 </style>
 </head>
 <body>
 
+<!-- WILLKOMMENS-MODAL -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <div class="modal-emoji">🥗</div>
+    <h2>Willkommen!</h2>
+    <p>Hier ist dein persönlicher Gesundheitsplan. Er hilft dir jeden Tag besser zu essen und dich mehr zu bewegen!</p>
+    <div class="modal-privacy">
+      <strong>🔒 Deine Daten bleiben bei dir!</strong>
+      Alles was du hier einträgst (Name, Gewicht, Checkliste) wird nur auf <strong>diesem Gerät</strong> gespeichert. Niemand anderes kann das sehen.
+    </div>
+    <input type="text" id="name-input" placeholder="Dein Vorname" maxlength="20">
+    <button class="modal-btn" onclick="saveName()">Los geht's! 💪</button>
+  </div>
+</div>
+
 <header>
   <h1>🥗 Mein Gesundheitsplan</h1>
 </header>
-<div class="streak-bar">🔥 <strong id="streak-count">0</strong> Tage in Folge dabei!</div>
+<div class="streak-bar">🔥 <span id="name-streak"></span><strong id="streak-count">0</strong> Tage in Folge dabei!</div>
 
 <div class="tab-row">
   <div class="tab active" onclick="showTab('essen',this)"><span class="tab-icon">🍽️</span>Essen</div>
@@ -223,8 +235,8 @@ header h1 { font-size: 20px; font-weight: 700; letter-spacing: -0.3px; }
   <div class="vis-card">
     <div class="card-header"><span class="card-icon">🍝</span><div><div class="card-title">Zuhause – Pasta</div></div></div>
     <div class="meal-visual">
-      <div class="food-item"><span class="food-emoji">🍝</span><span class="food-name">Vollkorn­nudeln (Faust groß)</span></div>
-      <div class="food-item"><span class="food-emoji">🍅</span><span class="food-name">Tomaten­soße + Gemüse</span></div>
+      <div class="food-item"><span class="food-emoji">🍝</span><span class="food-name">Vollkornnudeln (Faust groß)</span></div>
+      <div class="food-item"><span class="food-emoji">🍅</span><span class="food-name">Tomatensoße + Gemüse</span></div>
       <div class="food-item"><span class="food-emoji">🥗</span><span class="food-name">Großer Salat dazu</span></div>
     </div>
   </div>
@@ -241,14 +253,20 @@ header h1 { font-size: 20px; font-weight: 700; letter-spacing: -0.3px; }
   <div class="slabel">🌙 Abendbrot – 18:00</div>
   <div class="vis-card">
     <div class="meal-visual">
-      <div class="food-item"><span class="food-emoji">🍞</span><span class="food-name">2 Scheiben Vollkorn­brot</span></div>
+      <div class="food-item"><span class="food-emoji">🍞</span><span class="food-name">2 Scheiben Vollkornbrot</span></div>
       <div class="food-item"><span class="food-emoji">🧀</span><span class="food-name">Frischkäse oder Aufschnitt</span></div>
       <div class="food-item"><span class="food-emoji">🥦</span><span class="food-name">Rohes Gemüse</span></div>
     </div>
   </div>
 
   <div class="vis-card-red" style="margin-top:4px;">
-    <div class="card-header"><span class="card-icon">🚫</span><div><div class="card-title">Keine Zwischenmahlzeiten!</div><div class="card-sub">Hunger? → Großes Glas Wasser trinken!</div></div></div>
+    <div class="card-header">
+      <span class="card-icon">🚫</span>
+      <div>
+        <div class="card-title">Keine Zwischenmahlzeiten!</div>
+        <div class="card-sub">Hunger? → Rohkost essen! 🥕 Paprika, Karotte, Gurke</div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -260,7 +278,7 @@ header h1 { font-size: 20px; font-weight: 700; letter-spacing: -0.3px; }
     <div class="drink-item d-green"><span class="di">🍵</span><p>Tee (ungesüßt)<br>so oft du magst</p></div>
     <div class="drink-item d-amber"><span class="di">🍊</span><p>Fruchtsaft<br>max. 1 kleines Glas</p></div>
     <div class="drink-item d-red"><span class="di">🥤</span><p>Cola, Sprite, Fanta<br>NIE!</p></div>
-    <div class="drink-item d-red" style="grid-column: span 1;"><span class="di">⚡</span><p>Energy Drinks<br>NIE!</p></div>
+    <div class="drink-item d-red"><span class="di">⚡</span><p>Energy Drinks<br>NIE!</p></div>
   </div>
 
   <div class="vis-card-green" style="margin-top:12px;">
@@ -274,7 +292,7 @@ header h1 { font-size: 20px; font-weight: 700; letter-spacing: -0.3px; }
     <div class="water-grid" id="water-grid"></div>
     <div class="progress-row" style="margin-top:12px;">
       <div class="progress-track"><div class="progress-fill" id="water-bar" style="width:0%"></div></div>
-      <span style="font-size:13px; color:#1D9E75; font-weight:700; min-width:70px;" id="water-label">0 / 8</span>
+      <span style="font-size:13px; color:#1D9E75; font-weight:700; min-width:50px;" id="water-label">0 / 8</span>
     </div>
   </div>
 </div>
@@ -284,7 +302,7 @@ header h1 { font-size: 20px; font-weight: 700; letter-spacing: -0.3px; }
   <div class="vis-card-green">
     <div style="text-align:center; padding:6px 0;">
       <div style="font-size:40px;">🎯</div>
-      <div style="font-size:16px; font-weight:700; color:#085041; margin-top:6px;">Jeden Tag 20 Minuten!</div>
+      <div style="font-size:16px; font-weight:700; color:#085041; margin-top:6px;" id="sport-title">Jeden Tag 20 Minuten!</div>
       <div style="font-size:13px; color:#0F6E56; margin-top:4px;">Such dir einfach eine Übung aus die dir Spaß macht</div>
     </div>
   </div>
@@ -344,8 +362,8 @@ header h1 { font-size: 20px; font-weight: 700; letter-spacing: -0.3px; }
       </div>
       <div class="time-item">
         <div class="time-badge gray">Pause</div>
-        <span class="time-emoji">🚫</span>
-        <div><div class="time-text">Keine Snacks</div><div class="time-sub">Hunger? → Wasser trinken!</div></div>
+        <span class="time-emoji">🥕</span>
+        <div><div class="time-text">Hunger? → Rohkost!</div><div class="time-sub">Paprika, Karotte, Gurke – so viel du willst</div></div>
       </div>
       <div class="time-item">
         <div class="time-badge">18:00</div>
@@ -366,7 +384,7 @@ header h1 { font-size: 20px; font-weight: 700; letter-spacing: -0.3px; }
   <div id="weight-setup-section" class="weight-setup">
     <div style="text-align:center; margin-bottom:12px;">
       <div style="font-size:44px;">⚖️</div>
-      <div style="font-size:16px; font-weight:700; margin-top:4px;">Mein Ziel eintragen</div>
+      <div style="font-size:16px; font-weight:700; margin-top:4px;" id="weight-setup-title">Mein Ziel eintragen</div>
     </div>
     <div class="weight-inputs">
       <div class="winput-group">
@@ -385,17 +403,14 @@ header h1 { font-size: 20px; font-weight: 700; letter-spacing: -0.3px; }
     <div class="w-stats">
       <div class="w-stat"><div class="wval" id="w-start">–</div><div class="wlbl">Start</div></div>
       <div class="w-stat"><div class="wval" id="w-current">–</div><div class="wlbl">Aktuell</div></div>
-      <div class="w-stat"><div class="wval" id="w-ziel">–</div><div class="wlbl">Ziel</div></div>
+      <div class="w-stat"><div class="wval" id="w-ziel">–</div><div class="wlbl">Ziel 🎯</div></div>
     </div>
     <div class="vis-card">
-      <div style="display:flex; justify-content:space-between; font-size:11px; color:#888; margin-bottom:4px;">
-        <span>Start</span><span>Ziel</span>
-      </div>
+      <div style="display:flex; justify-content:space-between; font-size:11px; color:#888; margin-bottom:4px;"><span>Start</span><span>Ziel 🎯</span></div>
       <div class="w-bar-wrap"><div class="w-bar-fill" id="w-bar" style="width:0%"></div></div>
       <div style="font-size:12px; color:#888; text-align:right; margin-top:3px;" id="w-pct-label">0% geschafft</div>
-      <div class="w-motivate" id="w-motivate">💪 Du startest jetzt!</div>
+      <div class="w-motivate" id="w-motivate"></div>
     </div>
-
     <div class="vis-card">
       <div style="font-size:13px; font-weight:700; color:#888; margin-bottom:10px;">📋 Gewichtsverlauf</div>
       <div id="weight-entries"></div>
@@ -410,7 +425,10 @@ header h1 { font-size: 20px; font-weight: 700; letter-spacing: -0.3px; }
 
 <!-- HEUTE -->
 <div id="tab-check" class="hidden">
-  <div style="text-align:center; font-size:13px; color:#888; margin-bottom:12px;" id="check-date"></div>
+  <div style="text-align:center; margin-bottom:12px;">
+    <div style="font-size:13px; color:#888;" id="check-date"></div>
+    <div style="font-size:18px; font-weight:700; color:#1D9E75; margin-top:4px;" id="check-name-title"></div>
+  </div>
   <div class="vis-card">
     <div class="check-item" onclick="toggleCheck('c1')">
       <span class="check-icon">🌅</span>
@@ -458,18 +476,55 @@ header h1 { font-size: 20px; font-weight: 700; letter-spacing: -0.3px; }
       <span class="check-text" id="c9-text">Keine Cola oder Energy Drinks?</span>
     </div>
   </div>
-
-  <div id="done-msg" class="done-msg hidden">🏆 Alles erledigt!<br>Du machst das richtig super!</div>
+  <div id="done-msg" class="done-msg hidden"></div>
   <button class="reset-btn" onclick="resetDay()">🔄 Tag zurücksetzen</button>
 </div>
 
-</div>
+</div><!-- /content -->
 
 <script>
   const TODAY = new Date().toISOString().slice(0,10);
   const DAYS = ['Sonntag','Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag'];
   const dn = new Date();
   document.getElementById('check-date').textContent = DAYS[dn.getDay()] + ', ' + dn.getDate() + '.' + (dn.getMonth()+1) + '.' + dn.getFullYear();
+
+  // Name handling
+  function saveName() {
+    const val = document.getElementById('name-input').value.trim();
+    const name = val || 'Du';
+    localStorage.setItem('user_name', name);
+    document.getElementById('modal').classList.add('hidden');
+    applyName(name);
+  }
+  function applyName(name) {
+    // Streak bar
+    document.getElementById('name-streak').textContent = name + ' ist ';
+    // Sport title
+    const st = document.getElementById('sport-title');
+    if(st) st.textContent = name + ', jeden Tag 20 Minuten!';
+    // Weight setup title
+    const wt = document.getElementById('weight-setup-title');
+    if(wt) wt.textContent = name + 's Ziel eintragen';
+    // Check title
+    const ct = document.getElementById('check-name-title');
+    if(ct) ct.textContent = 'Wie war dein Tag, ' + name + '? 💪';
+    // Done message
+    const dm = document.getElementById('done-msg');
+    if(dm) dm.innerHTML = '🏆 Alles erledigt, ' + name + '!<br>Du machst das richtig super!';
+  }
+
+  // Check first visit
+  const savedName = localStorage.getItem('user_name');
+  if (savedName) {
+    document.getElementById('modal').classList.add('hidden');
+    applyName(savedName);
+  } else {
+    // Pre-fill done message default
+    document.getElementById('done-msg').innerHTML = '🏆 Alles erledigt!<br>Du machst das richtig super!';
+  }
+
+  // Enter key on name input
+  document.getElementById('name-input').addEventListener('keydown', e => { if(e.key === 'Enter') saveName(); });
 
   function showTab(id, el) {
     document.querySelectorAll('[id^="tab-"]').forEach(t => t.classList.add('hidden'));
@@ -514,7 +569,7 @@ header h1 { font-size: 20px; font-weight: 700; letter-spacing: -0.3px; }
   function checkDone(){
     const all=checks.every(id=>cd[id]);
     document.getElementById('done-msg').classList.toggle('hidden',!all);
-    if(all)updateStreak();
+    if(all) updateStreak();
   }
   function resetDay(){
     cd={};localStorage.setItem('check_'+TODAY,'{}');
@@ -538,7 +593,7 @@ header h1 { font-size: 20px; font-weight: 700; letter-spacing: -0.3px; }
   function saveGoal(){
     const st=parseFloat(document.getElementById('input-start').value);
     const zi=parseFloat(document.getElementById('input-ziel').value);
-    if(!st||!zi||st<=zi){alert('Bitte gültige Werte eingeben! Startgewicht muss größer sein.');return;}
+    if(!st||!zi||st<=zi){alert('Bitte gültige Werte eingeben!');return;}
     localStorage.setItem('weight_goal',JSON.stringify({start:st,ziel:zi}));
     localStorage.setItem('weight_log',JSON.stringify([{date:TODAY,kg:st}]));
     renderWeight();
@@ -558,6 +613,7 @@ header h1 { font-size: 20px; font-weight: 700; letter-spacing: -0.3px; }
   function renderWeight(){
     const goal=JSON.parse(localStorage.getItem('weight_goal')||'null');
     const log=JSON.parse(localStorage.getItem('weight_log')||'[]');
+    const name=localStorage.getItem('user_name')||'Du';
     if(!goal){document.getElementById('weight-setup-section').classList.remove('hidden');document.getElementById('weight-progress-section').classList.add('hidden');return;}
     document.getElementById('weight-setup-section').classList.add('hidden');
     document.getElementById('weight-progress-section').classList.remove('hidden');
@@ -571,14 +627,21 @@ header h1 { font-size: 20px; font-weight: 700; letter-spacing: -0.3px; }
     document.getElementById('w-bar').style.width=pct+'%';
     document.getElementById('w-pct-label').textContent=pct+'% geschafft';
     const rem=(cur-goal.ziel).toFixed(1);
-    const msgs=['💪 Du startest jetzt – jeder Tag zählt!','🚀 Super Anfang! Noch '+rem+' kg!','🔥 Du bist auf dem richtigen Weg!','⭐ Mehr als die Hälfte – weiter so!','🏁 Fast geschafft! Nur noch '+rem+' kg!','🏆 ZIEL ERREICHT! Unglaublich!'];
+    const msgs=[
+      '💪 '+name+', du startest jetzt – jeder Tag zählt!',
+      '🚀 Super '+name+'! Noch '+rem+' kg bis zum Ziel!',
+      '🔥 '+name+', du bist auf dem richtigen Weg!',
+      '⭐ '+name+', mehr als die Hälfte – weiter so!',
+      '🏁 Fast geschafft, '+name+'! Nur noch '+rem+' kg!',
+      '🏆 ZIEL ERREICHT, '+name+'! Unglaublich!'
+    ];
     document.getElementById('w-motivate').textContent=msgs[Math.min(5,Math.floor(pct/20))];
     const container=document.getElementById('weight-entries');
     container.innerHTML='';
     [...log].reverse().slice(0,8).forEach((e,i,arr)=>{
       const prev=arr[i+1];
       let diff='';
-      if(prev){const d=(e.kg-prev.kg).toFixed(1);diff=d<0?'<span class="wle-diff-good">▼ '+Math.abs(d)+' kg</span>':d>0?'<span class="wle-diff-bad">▲ '+d+' kg</span>':'=';}
+      if(prev){const d=(e.kg-prev.kg).toFixed(1);diff=d<0?'<span class="wle-diff-good">▼ '+Math.abs(d)+' kg</span>':d>0?'<span class="wle-diff-bad">▲ '+d+' kg</span>':'';}
       const p=e.date.split('-');
       container.innerHTML+='<div class="w-log-entry"><span class="wle-date">'+p[2]+'.'+p[1]+'.'+p[0]+'</span><span class="wle-kg">'+e.kg+' kg</span>'+diff+'</div>';
     });
