@@ -1,4 +1,4 @@
-const CACHE = 'gesundheitsplan-v1';
+const CACHE = 'gesundheitsplan-v2';
 const FILES = ['/', '/index.html', '/manifest.json'];
 
 self.addEventListener('install', e => {
