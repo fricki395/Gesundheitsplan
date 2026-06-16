@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Mein Gesundheitsplan</title>
+<meta name="description" content="Dein persönlicher Ernährungs- und Bewegungsplan">
+<meta name="theme-color" content="#1D9E75">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Gesundheitsplan">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f0; color: #1a1a1a; min-height: 100vh; }
+
+  header { background: #1D9E75; color: white; padding: 1.2rem 1.5rem; text-align: center; }
+  header h1 { font-size: 22px; font-weight: 600; }
+  header p { font-size: 13px; opacity: 0.85; margin-top: 4px; }
+
+  .streak-bar { background: #0F6E56; padding: 10px 1.5rem; text-align: center; font-size: 13px; color: #9FE1CB; }
+  .streak-bar strong { color: white; }
+
+  .tab-row { display: flex; background: white; border-bottom: 1px solid #e8e8e4; overflow-x: auto; }
+  .tab { flex: 1; min-width: 70px; padding: 14px 8px; text-align: center; font-size: 13px; color: #666; cursor: pointer; border-bottom: 3px solid transparent; white-space: nowrap; }
+  .tab.active { color: #1D9E75; border-bottom-color: #1D9E75; font-weight: 500; }
+
+  .content { max-width: 680px; margin: 0 auto; padding: 1.25rem 1rem 3rem; }
+  .hidden { display: none !important; }
+
+  /* Cards */
+  .card { background: white; border-radius: 12px; padding: 1rem 1.1rem; margin-bottom: 12px; border: 0.5px solid #e0e0da; }
+  .card-title { font-size: 15px; font-weight: 500; margin-bottom: 6px; }
+  .card-sub { font-size: 12px; color: #888; margin-bottom: 8px; }
+  .card ul { list-style: none; font-size: 13px; color: #444; line-height: 1.9; }
+  .card ul li::before { content: "· "; color: #1D9E75; font-weight: 700; }
+
+  .section-label { font-size: 12px; font-weight: 600; color: #1D9E75; text-transform: uppercase; letter-spacing: 0.5px; margin: 1.5rem 0 0.75rem; }
+
+  .rule-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 1rem; }
+  .rule-card { background: #f5fdf9; border-radius: 10px; padding: 0.8rem; text-align: center; border: 0.5px solid #c8ead9; }
+  .rule-icon { font-size: 22px; margin-bottom: 5px; }
+  .rule-text { font-size: 12px; color: #1a4a35; line-height: 1.4; }
+
+  .tip { background: #E1F5EE; border-radius: 10px; padding: 0.85rem 1rem; font-size: 13px; color: #085041; line-height: 1.6; margin-top: 1rem; }
+
+  /* Water tracker */
+  .water-grid { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0; }
+  .glass { width: 36px; height: 44px; border: 2px solid #1D9E75; border-radius: 4px 4px 8px 8px; cursor: pointer; background: transparent; position: relative; overflow: hidden; transition: background 0.2s; }
+  .glass.filled { background: #9FE1CB; }
+  .glass-fill { position: absolute; bottom: 0; left: 0; right: 0; height: 75%; background: #1D9E75; border-radius: 0 0 6px 6px; transition: opacity 0.2s; opacity: 0; }
+  .glass.filled .glass-fill { opacity: 1; }
+  .progress-row { display: flex; align-items: center; gap: 10px; margin-top: 8px; }
+  .progress-track { flex: 1; height: 6px; background: #e0e0da; border-radius: 99px; overflow: hidden; }
+  .progress-fill { height: 100%; background: #1D9E75; border-radius: 99px; transition: width 0.3s; }
+  #water-label { font-size: 13px; color: #0F6E56; font-weight: 500; min-width: 90px; }
+
+  /* Checklist */
+  .check-item { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 0.5px solid #f0f0ea; cursor: pointer; }
+  .check-item:last-child { border-bottom: none; }
+  .check-box { width: 22px; height: 22px; border-radius: 6px; border: 2px solid #ccc; flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+  .check-box.done { background: #1D9E75; border-color: #1D9E75; }
+  .check-box.done::after { content: "✓"; color: white; font-size: 13px; font-weight: 700; }
+  .check-text { font-size: 14px; color: #1a1a1a; }
+  .check-text.done { text-decoration: line-through; color: #aaa; }
+
+  /* Exercise */
+  .ex-card { background: white; border-radius: 12px; padding: 1rem; margin-bottom: 10px; border: 0.5px solid #e0e0da; display: flex; align-items: flex-start; gap: 12px; }
+  .ex-emoji { font-size: 28px; flex-shrink: 0; }
+  .ex-body { flex: 1; }
+  .ex-name { font-size: 14px; font-weight: 500; margin-bottom: 2px; }
+  .ex-detail { font-size: 12px; color: #888; margin-bottom: 4px; }
+  .ex-why { font-size: 12px; color: #0F6E56; line-height: 1.5; }
+  .ex-bar { height: 4px; background: #e8e8e4; border-radius: 99px; margin-top: 8px; overflow: hidden; }
+  .ex-fill { height: 100%; background: #1D9E75; border-radius: 99px; }
+
+  /* Week */
+  .week-row { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; margin-bottom: 1.5rem; }
+  .day { text-align: center; }
+  .day-name { font-size: 11px; color: #888; margin-bottom: 5px; }
+  .day-dot { width: 38px; height: 38px; border-radius: 50%; margin: 0 auto; display: flex; align-items: center; justify-content: center; font-size: 16px; }
+  .day-sport { background: #E1F5EE; }
+  .day-rest { background: #f5f5f0; }
+  .day-note { font-size: 10px; color: #888; margin-top: 3px; line-height: 1.3; }
+
+  /* Drink comparison */
+  .drink-row { display: flex; gap: 8px; flex-wrap: wrap; margin: 10px 0; }
+  .drink-pill { padding: 6px 12px; border-radius: 99px; font-size: 12px; font-weight: 500; }
+  .drink-ok { background: #E1F5EE; color: #085041; }
+  .drink-warn { background: #FAEEDA; color: #633806; }
+  .drink-bad { background: #FCEBEB; color: #501313; }
+
+  /* Reset button */
+  .reset-btn { background: none; border: 0.5px solid #ccc; border-radius: 8px; padding: 8px 14px; font-size: 12px; color: #888; cursor: pointer; margin-top: 1rem; }
+  .reset-btn:hover { color: #e24b4a; border-color: #e24b4a; }
+
+  .today-label { font-size: 12px; color: #888; margin-bottom: 12px; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🥗 Mein Gesundheitsplan</h1>
+  <p id="header-date">Heute: –</p>
+</header>
+<div class="streak-bar">
+  🔥 Streak: <strong id="streak-count">0 Tage</strong> in Folge dabei!
+</div>
+
+<div class="tab-row">
+  <div class="tab active" onclick="showTab('essen',this)">🍽️ Essen</div>
+  <div class="tab" onclick="showTab('trinken',this)">💧 Trinken</div>
+  <div class="tab" onclick="showTab('sport',this)">🏃 Bewegung</div>
+  <div class="tab" onclick="showTab('woche',this)">📅 Plan</div>
+  <div class="tab" onclick="showTab('check',this)">✅ Heute</div>
+</div>
+
+<div class="content">
+
+<!-- ESSEN -->
+<div id="tab-essen">
+  <div class="rule-grid">
+    <div class="rule-card"><div class="rule-icon">🍽️</div><div class="rule-text">3 Mahlzeiten am Tag – kein Auslassen!</div></div>
+    <div class="rule-card"><div class="rule-icon">🐢</div><div class="rule-text">Langsam essen und gut kauen</div></div>
+    <div class="rule-card"><div class="rule-icon">📱</div><div class="rule-text">Handy weg beim Essen</div></div>
+    <div class="rule-card"><div class="rule-icon">🛑</div><div class="rule-text">Aufhören wenn du satt bist</div></div>
+  </div>
+
+  <div class="section-label">☀️ Frühstück</div>
+  <div class="card">
+    <div class="card-title">🥣 Hafer-Power</div>
+    <div class="card-sub">Mo / Mi / Fr</div>
+    <ul><li>Haferflocken mit Milch</li><li>1 Banane oder Apfel</li><li>1 kleiner Löffel Honig</li></ul>
+  </div>
+  <div class="card">
+    <div class="card-title">🍞 Brot-Start</div>
+    <div class="card-sub">Di / Do</div>
+    <ul><li>2 Scheiben Vollkornbrot</li><li>Käse oder Ei drauf</li><li>1 Tomate oder Gurke</li></ul>
+  </div>
+  <div class="card">
+    <div class="card-title">🍳 Genuss-Frühstück</div>
+    <div class="card-sub">Wochenende</div>
+    <ul><li>Rührei mit Vollkorntoast</li><li>Obst nach Wahl</li><li>Joghurt (natur)</li></ul>
+  </div>
+
+  <div class="section-label">🌞 Mittagessen</div>
+  <div class="card">
+    <div class="card-title">🍝 Pasta-Tag</div>
+    <ul><li>Vollkornnudeln</li><li>Tomatensoße mit Gemüse</li><li>Geriebener Käse drüber</li></ul>
+  </div>
+  <div class="card">
+    <div class="card-title">🍗 Hähnchen-Tag</div>
+    <ul><li>Gegrilltes Hähnchen</li><li>Reis oder Kartoffeln</li><li>Gurke oder Karotten</li></ul>
+  </div>
+  <div class="card">
+    <div class="card-title">🥣 Suppen-Tag</div>
+    <ul><li>Linsen- oder Gemüsesuppe</li><li>1 Scheibe Brot dazu</li><li>Naturjoghurt als Nachtisch</li></ul>
+  </div>
+
+  <div class="section-label">🌙 Abendbrot</div>
+  <div class="card">
+    <div class="card-title">Einfach & leicht</div>
+    <ul><li>2 Scheiben Vollkornbrot</li><li>Frischkäse oder magerer Aufschnitt</li><li>Rohes Gemüse: Paprika, Karotten, Gurke</li><li>Kein Süßes nach 18 Uhr ✓</li></ul>
+  </div>
+
+  <div class="tip">💡 <strong>Snack-Tipp:</strong> Hunger zwischen den Mahlzeiten? Eine Handvoll Nüsse, ein Stück Obst oder ein Naturjoghurt. Chips & Schokolade sind okay – aber nur einmal am Tag!</div>
+</div>
+
+<!-- TRINKEN -->
+<div id="tab-trinken" class="hidden">
+  <div class="section-label">Was ist gut?</div>
+  <div class="drink-row">
+    <span class="drink-pill drink-ok">✅ Wasser – so viel du willst</span>
+    <span class="drink-pill drink-ok">✅ Ungesüßter Tee</span>
+    <span class="drink-pill drink-warn">⚠️ Fruchtsaft – max. 1 kleines Glas</span>
+    <span class="drink-pill drink-bad">❌ Cola, Sprite, Fanta – nie!</span>
+    <span class="drink-pill drink-bad">❌ Energy Drinks – nie!</span>
+  </div>
+
+  <div class="section-label">💧 Heute getrunken?</div>
+  <p style="font-size: 13px; color: #666; margin-bottom: 10px;">Tippe auf ein Glas wenn du es getrunken hast! Jedes Glas = 250 ml.</p>
+  <div class="water-grid" id="water-grid"></div>
+  <div class="progress-row">
+    <div class="progress-track"><div class="progress-fill" id="water-bar" style="width:0%"></div></div>
+    <span id="water-label">0 von 8 Gläsern</span>
+  </div>
+
+  <div class="tip" style="margin-top: 1rem;">🍋 <strong>Tipp:</strong> Wasser schmeckt langweilig? Eine Zitronenscheibe, Minzblätter oder gefrorene Beeren rein – sieht cool aus und schmeckt besser! Cola, Sprite oder Energy Drinks haben so viel Zucker, dass dein Körper davon müder wird – nicht fitter.</div>
+
+  <div class="section-label">Wann am besten trinken?</div>
+  <div class="card">
+    <div style="display:flex; flex-direction:column; gap: 10px;">
+      <div style="display:flex; align-items:center; gap:10px; font-size:13px;">
+        <span style="width:70px; color:#666;">Morgens</span>
+        <div style="flex:1; height:8px; background:#e8e8e4; border-radius:99px; overflow:hidden;"><div style="width:28%; height:100%; background:#1D9E75; border-radius:99px;"></div></div>
+        <span style="color:#666; min-width:50px;">~500 ml</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:10px; font-size:13px;">
+        <span style="width:70px; color:#666;">Mittags</span>
+        <div style="flex:1; height:8px; background:#e8e8e4; border-radius:99px; overflow:hidden;"><div style="width:42%; height:100%; background:#1D9E75; border-radius:99px;"></div></div>
+        <span style="color:#666; min-width:50px;">~750 ml</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:10px; font-size:13px;">
+        <span style="width:70px; color:#666;">Abends</span>
+        <div style="flex:1; height:8px; background:#e8e8e4; border-radius:99px; overflow:hidden;"><div style="width:30%; height:100%; background:#5DCAA5; border-radius:99px;"></div></div>
+        <span style="color:#666; min-width:50px;">~500 ml</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SPORT -->
+<div id="tab-sport" class="hidden">
+  <div class="tip" style="margin-bottom:1rem;">🎯 Ziel am Anfang: <strong>3× pro Woche, je 20 Minuten</strong>. Fang langsam an – das reicht!</div>
+
+  <div class="section-label">Gelenk-schonende Übungen</div>
+
+  <div class="ex-card">
+    <div class="ex-emoji">🚶</div>
+    <div class="ex-body">
+      <div class="ex-name">Zügiges Gehen</div>
+      <div class="ex-detail">15–20 Min · draußen oder drinnen</div>
+      <div class="ex-why">Perfekt zum Start! Schont Knie und Hüfte. Einfach eine Runde um den Block.</div>
+      <div class="ex-bar"><div class="ex-fill" style="width:95%"></div></div>
+      <div style="font-size:11px; color:#888; margin-top:3px;">Gelenk-schonend: sehr gut</div>
+    </div>
+  </div>
+  <div class="ex-card">
+    <div class="ex-emoji">🚲</div>
+    <div class="ex-body">
+      <div class="ex-name">Fahrrad fahren</div>
+      <div class="ex-detail">15–20 Min · gemütliches Tempo</div>
+      <div class="ex-why">Das Gewicht liegt auf dem Sattel – deine Gelenke freuen sich!</div>
+      <div class="ex-bar"><div class="ex-fill" style="width:98%"></div></div>
+      <div style="font-size:11px; color:#888; margin-top:3px;">Gelenk-schonend: sehr gut</div>
+    </div>
+  </div>
+  <div class="ex-card">
+    <div class="ex-emoji">🏊</div>
+    <div class="ex-body">
+      <div class="ex-name">Schwimmen</div>
+      <div class="ex-detail">15–20 Min · beliebige Lage</div>
+      <div class="ex-why">Das Wasser trägt dich – null Druck auf die Gelenke. Macht auch Spaß!</div>
+      <div class="ex-bar"><div class="ex-fill" style="width:100%"></div></div>
+      <div style="font-size:11px; color:#888; margin-top:3px;">Gelenk-schonend: optimal</div>
+    </div>
+  </div>
+  <div class="ex-card">
+    <div class="ex-emoji">💪</div>
+    <div class="ex-body">
+      <div class="ex-name">Wandstützen</div>
+      <div class="ex-detail">3 × 10 Wiederholungen</div>
+      <div class="ex-why">Wie Liegestütze – aber an der Wand. Für Arme und Brust, ohne Bodendruck.</div>
+      <div class="ex-bar"><div class="ex-fill" style="width:90%"></div></div>
+      <div style="font-size:11px; color:#888; margin-top:3px;">Gelenk-schonend: sehr gut</div>
+    </div>
+  </div>
+  <div class="ex-card">
+    <div class="ex-emoji">🧘</div>
+    <div class="ex-body">
+      <div class="ex-name">Dehnen & Strecken</div>
+      <div class="ex-detail">10 Min · morgens oder abends</div>
+      <div class="ex-why">Macht beweglicher und fühlt sich super an! Einfach im Zimmer machen.</div>
+      <div class="ex-bar"><div class="ex-fill" style="width:100%"></div></div>
+      <div style="font-size:11px; color:#888; margin-top:3px;">Gelenk-schonend: optimal</div>
+    </div>
+  </div>
+  <div class="ex-card">
+    <div class="ex-emoji">🪑</div>
+    <div class="ex-body">
+      <div class="ex-name">Stuhl-Kniebeugen</div>
+      <div class="ex-detail">3 × 10 · mit Stuhl als Hilfe</div>
+      <div class="ex-why">Langsam auf den Stuhl setzen und wieder aufstehen – stärkt die Beine sicher.</div>
+      <div class="ex-bar"><div class="ex-fill" style="width:85%"></div></div>
+      <div style="font-size:11px; color:#888; margin-top:3px;">Gelenk-schonend: gut</div>
+    </div>
+  </div>
+
+  <div class="tip">❗ <strong>Wichtig:</strong> Nie bis zum Schmerz trainieren! Wenn etwas wehtut – aufhören. Kleine Schritte bringen mehr als einmal übertreiben.</div>
+</div>
+
+<!-- WOCHENPLAN -->
+<div id="tab-woche" class="hidden">
+  <div class="section-label">Mein Wochenrhythmus</div>
+  <div class="week-row">
+    <div class="day"><div class="day-name">Mo</div><div class="day-dot day-sport">🚶</div><div class="day-note">20 Min gehen</div></div>
+    <div class="day"><div class="day-name">Di</div><div class="day-dot day-rest">😴</div><div class="day-note">Pause</div></div>
+    <div class="day"><div class="day-name">Mi</div><div class="day-dot day-sport">🚲</div><div class="day-note">Rad fahren</div></div>
+    <div class="day"><div class="day-name">Do</div><div class="day-dot day-rest">😴</div><div class="day-note">Pause</div></div>
+    <div class="day"><div class="day-name">Fr</div><div class="day-dot day-sport">💪</div><div class="day-note">Übungen zuhause</div></div>
+    <div class="day"><div class="day-name">Sa</div><div class="day-dot day-rest">🌳</div><div class="day-note">Spaziergang</div></div>
+    <div class="day"><div class="day-name">So</div><div class="day-dot day-rest">😴</div><div class="day-note">Ruhetag</div></div>
+  </div>
+
+  <div class="section-label">Was esse ich wann?</div>
+  <div class="card">
+    <table style="width:100%; font-size:13px; border-collapse:collapse;">
+      <tr style="border-bottom:1px solid #f0f0ea;">
+        <td style="padding:8px 4px; color:#888; width:30%;">07:00</td>
+        <td style="padding:8px 4px; font-weight:500;">☀️ Frühstück</td>
+        <td style="padding:8px 4px; color:#444;">Haferflocken oder Brot</td>
+      </tr>
+      <tr style="border-bottom:1px solid #f0f0ea;">
+        <td style="padding:8px 4px; color:#888;">10:00</td>
+        <td style="padding:8px 4px;">🍎 Snack</td>
+        <td style="padding:8px 4px; color:#444;">Obst oder Joghurt</td>
+      </tr>
+      <tr style="border-bottom:1px solid #f0f0ea;">
+        <td style="padding:8px 4px; color:#888;">12:30</td>
+        <td style="padding:8px 4px; font-weight:500;">🌞 Mittagessen</td>
+        <td style="padding:8px 4px; color:#444;">Warmes Gericht</td>
+      </tr>
+      <tr style="border-bottom:1px solid #f0f0ea;">
+        <td style="padding:8px 4px; color:#888;">15:30</td>
+        <td style="padding:8px 4px;">🍌 Snack</td>
+        <td style="padding:8px 4px; color:#444;">Handvoll Nüsse oder Obst</td>
+      </tr>
+      <tr>
+        <td style="padding:8px 4px; color:#888;">18:00</td>
+        <td style="padding:8px 4px; font-weight:500;">🌙 Abendbrot</td>
+        <td style="padding:8px 4px; color:#444;">Brot mit Gemüse</td>
+      </tr>
+    </table>
+  </div>
+</div>
+
+<!-- CHECKLISTE -->
+<div id="tab-check" class="hidden">
+  <div class="today-label" id="check-date">Heute: –</div>
+  <div class="card" id="checklist-card">
+    <div class="check-item" onclick="toggleCheck('c1')">
+      <div class="check-box" id="c1-box"></div>
+      <span class="check-text" id="c1-text">🌅 Frühstück gegessen?</span>
+    </div>
+    <div class="check-item" onclick="toggleCheck('c2')">
+      <div class="check-box" id="c2-box"></div>
+      <span class="check-text" id="c2-text">☀️ Mittagessen gegessen?</span>
+    </div>
+    <div class="check-item" onclick="toggleCheck('c3')">
+      <div class="check-box" id="c3-box"></div>
+      <span class="check-text" id="c3-text">🌙 Abendbrot gegessen?</span>
+    </div>
+    <div class="check-item" onclick="toggleCheck('c4')">
+      <div class="check-box" id="c4-box"></div>
+      <span class="check-text" id="c4-text">💧 Mindestens 6 Gläser getrunken?</span>
+    </div>
+    <div class="check-item" onclick="toggleCheck('c5')">
+      <div class="check-box" id="c5-box"></div>
+      <span class="check-text" id="c5-text">🏃 Heute bewegt (mind. 20 Min)?</span>
+    </div>
+    <div class="check-item" onclick="toggleCheck('c6')">
+      <div class="check-box" id="c6-box"></div>
+      <span class="check-text" id="c6-text">📵 Handy weg beim Essen?</span>
+    </div>
+    <div class="check-item" onclick="toggleCheck('c7')">
+      <div class="check-box" id="c7-box"></div>
+      <span class="check-text" id="c7-text">❌ Keine Cola, Sprite oder Energy Drinks heute?</span>
+    </div>
+  </div>
+
+  <div id="done-msg" class="tip hidden" style="text-align:center; font-size:15px;">
+    🏆 Alles erledigt! Du machst das super!
+  </div>
+
+  <div style="text-align:center;">
+    <button class="reset-btn" onclick="resetDay()">🔄 Tag zurücksetzen</button>
+  </div>
+</div>
+
+</div><!-- /content -->
+
+<script>
+  const TODAY = new Date().toISOString().slice(0,10);
+  const DAYS = ['Sonntag','Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag'];
+  const d = new Date();
+  const label = DAYS[d.getDay()] + ', ' + d.getDate() + '.' + (d.getMonth()+1) + '.' + d.getFullYear();
+  document.getElementById('header-date').textContent = 'Heute: ' + label;
+  document.getElementById('check-date').textContent = 'Heute: ' + label;
+
+  // Tab switching
+  function showTab(id, el) {
+    document.querySelectorAll('[id^="tab-"]').forEach(t => t.classList.add('hidden'));
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('tab-' + id).classList.remove('hidden');
+    el.classList.add('active');
+  }
+
+  // Water tracker
+  const waterGrid = document.getElementById('water-grid');
+  let waterData = JSON.parse(localStorage.getItem('water_' + TODAY) || '{}');
+  for (let i = 0; i < 8; i++) {
+    const g = document.createElement('div');
+    g.className = 'glass' + (waterData[i] ? ' filled' : '');
+    g.innerHTML = '<div class="glass-fill"></div>';
+    g.onclick = () => {
+      g.classList.toggle('filled');
+      waterData[i] = g.classList.contains('filled');
+      localStorage.setItem('water_' + TODAY, JSON.stringify(waterData));
+      updateWater();
+    };
+    waterGrid.appendChild(g);
+  }
+  function updateWater() {
+    const count = document.querySelectorAll('.glass.filled').length;
+    document.getElementById('water-bar').style.width = Math.round(count/8*100) + '%';
+    document.getElementById('water-label').textContent = count + ' von 8 Gläsern';
+  }
+  updateWater();
+
+  // Checklist
+  const checks = ['c1','c2','c3','c4','c5','c6','c7'];
+  let checkData = JSON.parse(localStorage.getItem('check_' + TODAY) || '{}');
+  checks.forEach(id => {
+    if (checkData[id]) {
+      document.getElementById(id+'-box').classList.add('done');
+      document.getElementById(id+'-text').classList.add('done');
+    }
+  });
+  checkDone();
+
+  function toggleCheck(id) {
+    checkData[id] = !checkData[id];
+    localStorage.setItem('check_' + TODAY, JSON.stringify(checkData));
+    const box = document.getElementById(id+'-box');
+    const txt = document.getElementById(id+'-text');
+    box.classList.toggle('done', checkData[id]);
+    txt.classList.toggle('done', checkData[id]);
+    checkDone();
+  }
+  function checkDone() {
+    const allDone = checks.every(id => checkData[id]);
+    document.getElementById('done-msg').classList.toggle('hidden', !allDone);
+    if (allDone) updateStreak();
+  }
+  function resetDay() {
+    checkData = {};
+    localStorage.setItem('check_' + TODAY, '{}');
+    checks.forEach(id => {
+      document.getElementById(id+'-box').classList.remove('done');
+      document.getElementById(id+'-text').classList.remove('done');
+    });
+    document.getElementById('done-msg').classList.add('hidden');
+  }
+
+  // Streak
+  function updateStreak() {
+    let streak = JSON.parse(localStorage.getItem('streak') || '{"days":[],"last":""}');
+    if (!streak.days.includes(TODAY)) {
+      streak.days.push(TODAY);
+      streak.last = TODAY;
+      localStorage.setItem('streak', JSON.stringify(streak));
+    }
+    const count = streak.days.length;
+    document.getElementById('streak-count').textContent = count + (count === 1 ? ' Tag' : ' Tage');
+  }
+  // Show streak on load
+  const s = JSON.parse(localStorage.getItem('streak') || '{"days":[]}');
+  document.getElementById('streak-count').textContent = s.days.length + (s.days.length === 1 ? ' Tag' : ' Tage');
+</script>
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('sw.js').catch(() => {});
+    });
+  }
+</script>
+</body>
+</html>
